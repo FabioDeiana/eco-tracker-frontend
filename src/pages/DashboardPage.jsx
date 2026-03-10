@@ -7,69 +7,178 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  Filler,
   Title,
   Tooltip,
   Legend,
 } from "chart.js"
 import apiFetch from "../api/apiFetch"
 
-// Registriamo i componenti di Chart.js che useremo
-// Senza questa registrazione il grafico non funziona
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
+// Registriamo i componenti di Chart.js — Filler serve per il fill: true del grafico
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Title, Tooltip, Legend)
 
-// Media globale CO₂ pro capite al giorno in kg (fonte: Our World in Data)
 const MEDIA_GLOBALE_KG = 13.0
+
+const ACTIVITY_TYPES = [
+  { value: "CAR",         label: "🚗 Auto",         unit: "km" },
+  { value: "MEAT",        label: "🥩 Carne",         unit: "kg" },
+  { value: "ELECTRICITY", label: "⚡ Elettricità",   unit: "kWh" },
+  { value: "FLIGHT",      label: "✈️ Volo",          unit: "km" },
+  { value: "HEATING",     label: "🔥 Riscaldamento", unit: "kWh" },
+]
 
 function DashboardPage() {
   const location = useLocation()
-  // Lista di tutti i log storici dell'utente
+
   const [logs, setLogs] = useState([])
-
-  // Log di oggi (array perché l'endpoint ritorna una lista)
   const [todayLog, setTodayLog] = useState(null)
-
-  // Attività di oggi
   const [todayActivities, setTodayActivities] = useState([])
-
-  // Stato di caricamento e errore
+  const [suggestedTips, setSuggestedTips] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
-  // useEffect — viene eseguito una volta quando la pagina si carica
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("fetchData eseguita!")
-      try {
-        // Carichiamo tutti i log storici e il log di oggi in parallelo
-        const [allLogs, todayLogs] = await Promise.all([
-          apiFetch("/logs/me"),
-          apiFetch("/logs/me/today"),
-        ])
+  // Stato form aggiunta attività
+  const [formData, setFormData] = useState({ type: "CAR", value: "" })
+  const [formLoading, setFormLoading] = useState(false)
+  const [formError, setFormError] = useState("")
 
-        setLogs(allLogs)
+  // Carica i dati della dashboard
+  const fetchData = async () => {
+    setLoading(true)
+    setError("")
+    try {
+      const [allLogs, todayLogs] = await Promise.all([
+        apiFetch("/logs/me"),
+        apiFetch("/logs/me/today"),
+      ])
 
-        // today è il primo elemento dell'array (se esiste)
-        const today = todayLogs.length > 0 ? todayLogs[0] : null
-        setTodayLog(today)
+      setLogs(allLogs)
 
-        // Se esiste il log di oggi, carichiamo anche le sue attività
-        if (today) {
-          const activities = await apiFetch(`/logs/${today.id}/activities`)
-          setTodayActivities(activities)
-        }
+      const today = todayLogs.length > 0 ? todayLogs[0] : null
+      setTodayLog(today)
 
-      } catch (err) {
-        console.log("Errore fetchData:", err)
-        setError("Errore nel caricamento dei dati")
-      } finally {
-        setLoading(false)
+      if (today) {
+        const activities = await apiFetch(`/logs/${today.id}/activities`)
+        setTodayActivities(activities)
+
+        // Carichiamo i tips suggeriti in base alle categorie delle attività di oggi
+        await fetchSuggestedTips(activities)
       }
+
+    } catch (err) {
+      setError("Errore nel caricamento dei dati")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Carica i green tips in base alle attività registrate oggi
+  const fetchSuggestedTips = async (activities) => {
+    if (activities.length === 0) {
+      setSuggestedTips([])
+      return
     }
 
+    try {
+      // Prendiamo le categorie uniche delle attività di oggi
+      const categories = [...new Set(activities.map((a) => a.type))]
+
+      // Per ogni categoria carichiamo i tips — in parallelo
+      const tipsArrays = await Promise.all(
+        categories.map((cat) => apiFetch(`/tips/category?category=${cat}`))
+      )
+
+      // Uniamo tutti i tips in un unico array
+      const allTips = tipsArrays.flat()
+      setSuggestedTips(allTips)
+
+    } catch (err) {
+      // Se fallisce non blocchiamo la dashboard — i tips sono opzionali
+      setSuggestedTips([])
+    }
+  }
+
+  useEffect(() => {
     fetchData()
   }, [location])
 
-  // Prepariamo i dati per il grafico — ultimi 7 log
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  // Aggiunge una nuova attività — crea il log se non esiste ancora
+  const handleAddActivity = async (e) => {
+    e.preventDefault()
+    setFormError("")
+    setFormLoading(true)
+
+    try {
+      // Se non esiste ancora il log di oggi lo creiamo
+      let currentLogId = todayLog?.id
+      if (!currentLogId) {
+        const newLog = await apiFetch("/logs", { method: "POST" })
+        setTodayLog(newLog)
+        currentLogId = newLog.id
+      }
+
+      // Aggiungiamo l'attività al log
+      const newActivity = await apiFetch(`/logs/${currentLogId}/activities`, {
+        method: "POST",
+        body: JSON.stringify({
+          type: formData.type,
+          value: parseFloat(formData.value),
+        }),
+      })
+
+      // Aggiorniamo la lista attività localmente
+      const updatedActivities = [...todayActivities, newActivity]
+      setTodayActivities(updatedActivities)
+
+      // Aggiorniamo il totale CO₂ localmente
+      setTodayLog((prev) => ({
+        ...prev,
+        totalCo2: (prev?.totalCo2 || 0) + newActivity.co2Emission,
+      }))
+
+      // Aggiorniamo i tips suggeriti
+      await fetchSuggestedTips(updatedActivities)
+
+      // Resettiamo il form
+      setFormData({ ...formData, value: "" })
+
+    } catch (err) {
+      setFormError(err.message || "Errore durante l'aggiunta dell'attività")
+    } finally {
+      setFormLoading(false)
+    }
+  }
+
+  // Elimina un'attività
+  const handleDeleteActivity = async (activityId, co2Emission) => {
+    try {
+      await apiFetch(`/logs/${todayLog.id}/activities/${activityId}`, {
+        method: "DELETE",
+      })
+
+      // Aggiorniamo la lista attività localmente
+      const updatedActivities = todayActivities.filter((a) => a.id !== activityId)
+      setTodayActivities(updatedActivities)
+
+      // Sottraiamo la CO₂ dal totale
+      setTodayLog((prev) => ({
+        ...prev,
+        totalCo2: Math.max(0, (prev?.totalCo2 || 0) - co2Emission),
+      }))
+
+      // Aggiorniamo i tips suggeriti
+      await fetchSuggestedTips(updatedActivities)
+
+    } catch (err) {
+      setError("Errore durante l'eliminazione dell'attività")
+    }
+  }
+
+  // Dati per il grafico
   const ultimi7 = logs.slice(-7)
   const chartData = {
     labels: ultimi7.map((log) => log.date),
@@ -79,7 +188,7 @@ function DashboardPage() {
         data: ultimi7.map((log) => log.totalCo2),
         borderColor: "#198754",
         backgroundColor: "rgba(25, 135, 84, 0.1)",
-        tension: 0.4, // rende la linea curva
+        tension: 0.4,
         fill: true,
       },
     ],
@@ -89,7 +198,6 @@ function DashboardPage() {
     responsive: true,
     plugins: {
       legend: { position: "top" },
-      title: { display: false },
     },
     scales: {
       y: {
@@ -99,12 +207,10 @@ function DashboardPage() {
     },
   }
 
-  // CO₂ di oggi — 0 se non c'è ancora un log
   const co2Oggi = todayLog ? todayLog.totalCo2 : 0
-
-  // Confronto con la media globale in percentuale
   const differenza = co2Oggi - MEDIA_GLOBALE_KG
   const isMeglio = differenza < 0
+  const selectedType = ACTIVITY_TYPES.find((a) => a.value === formData.type)
 
   if (loading) {
     return (
@@ -127,10 +233,8 @@ function DashboardPage() {
     <div className="container mt-4">
       <h4 className="fw-bold text-success mb-4">La tua Dashboard</h4>
 
-      {/* Riga cards in cima */}
+      {/* Cards CO₂ */}
       <div className="row g-3 mb-4">
-
-        {/* Card CO₂ oggi */}
         <div className="col-md-4">
           <div className="card shadow-sm h-100">
             <div className="card-body text-center">
@@ -140,8 +244,6 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-
-        {/* Card confronto media globale */}
         <div className="col-md-4">
           <div className="card shadow-sm h-100">
             <div className="card-body text-center">
@@ -149,14 +251,10 @@ function DashboardPage() {
               <h2 className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}>
                 {isMeglio ? "" : "+"}{differenza.toFixed(2)}
               </h2>
-              <p className="text-muted">
-                {isMeglio ? "🌿 Sotto la media!" : "⚠️ Sopra la media"}
-              </p>
+              <p className="text-muted">{isMeglio ? "🌿 Sotto la media!" : "⚠️ Sopra la media"}</p>
             </div>
           </div>
         </div>
-
-        {/* Card attività oggi */}
         <div className="col-md-4">
           <div className="card shadow-sm h-100">
             <div className="card-body text-center">
@@ -166,43 +264,137 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-
       </div>
 
-      {/* Grafico storico */}
-      <div className="card shadow-sm mb-4">
-        <div className="card-body">
-          <h6 className="fw-bold mb-3">Storico CO₂ (ultimi 7 giorni)</h6>
-          {logs.length === 0 ? (
-            <p className="text-muted text-center py-3">
-              Nessun dato disponibile — inizia registrando le tue attività!
-            </p>
-          ) : (
-            <Line data={chartData} options={chartOptions} />
-          )}
+      <div className="row g-4">
+
+        {/* Colonna sinistra — form + attività */}
+        <div className="col-lg-5">
+
+          {/* Form aggiunta attività */}
+          <div className="card shadow-sm mb-4">
+            <div className="card-body">
+              <h6 className="fw-bold mb-3">Aggiungi attività</h6>
+
+              {formError && <div className="alert alert-danger py-2">{formError}</div>}
+
+              <form onSubmit={handleAddActivity}>
+                <div className="mb-3">
+                  <label className="form-label">Tipo</label>
+                  <select
+                    name="type"
+                    className="form-select"
+                    value={formData.type}
+                    onChange={handleChange}
+                  >
+                    {ACTIVITY_TYPES.map((a) => (
+                      <option key={a.value} value={a.value}>{a.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Quantità ({selectedType.unit})</label>
+                  <input
+                    type="number"
+                    name="value"
+                    className="form-control"
+                    placeholder={`es. 10 ${selectedType.unit}`}
+                    value={formData.value}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.1"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-success w-100"
+                  disabled={formLoading}
+                >
+                  {formLoading ? "Aggiunta..." : "Aggiungi attività"}
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Lista attività di oggi */}
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h6 className="fw-bold mb-3">Attività di oggi</h6>
+              {todayActivities.length === 0 ? (
+                <p className="text-muted text-center py-3">Nessuna attività registrata oggi.</p>
+              ) : (
+                <ul className="list-group list-group-flush">
+                  {todayActivities.map((activity) => (
+                    <li key={activity.id} className="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                        <span>{ACTIVITY_TYPES.find((a) => a.value === activity.type)?.label || activity.type}</span>
+                        <br />
+                        <small className="text-muted">{activity.value} {ACTIVITY_TYPES.find((a) => a.value === activity.type)?.unit}</small>
+                      </div>
+                      <div className="d-flex align-items-center gap-2">
+                        <span className="badge bg-success rounded-pill">
+                          {activity.co2Emission?.toFixed(2)} kg CO₂
+                        </span>
+                        {/* Bottone elimina */}
+                        <button
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => handleDeleteActivity(activity.id, activity.co2Emission)}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      {/* Attività di oggi */}
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <h6 className="fw-bold mb-3">Attività di oggi</h6>
-          {todayActivities.length === 0 ? (
-            <p className="text-muted text-center py-3">
-              Nessuna attività registrata oggi.
-            </p>
-          ) : (
-            <ul className="list-group list-group-flush">
-              {todayActivities.map((activity) => (
-                <li key={activity.id} className="list-group-item d-flex justify-content-between align-items-center">
-                  <span>{activity.activityType}</span>
-                  <span className="badge bg-success rounded-pill">
-                    {activity.co2Emission?.toFixed(2)} kg CO₂
-                  </span>
-                </li>
-              ))}
-            </ul>
+        {/* Colonna destra — grafico + tips */}
+        <div className="col-lg-7">
+
+          
+
+          {/* Green Tips suggeriti */}
+          {suggestedTips.length > 0 && (
+            <div className="card shadow-sm">
+              <div className="card-body">
+                <h6 className="fw-bold mb-3">🌿 Consigli per te</h6>
+                <div className="row g-2">
+                  {suggestedTips.map((tip) => (
+                    <div key={tip.id} className="col-12">
+                      <div className="card border-success">
+                        <div className="card-body py-2">
+                          <span className="badge bg-success mb-1">
+                            {ACTIVITY_TYPES.find((a) => a.value === tip.category)?.label || tip.category}
+                          </span>
+                          <p className="fw-bold mb-1 small">{tip.title}</p>
+                          <p className="text-muted mb-1 small">{tip.description}</p>
+                          <small className="text-success">🌿 Risparmio stimato: {tip.co2SavedEstimate} kg CO₂</small>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           )}
+
+          {/* Grafico storico */}
+          <div className="card shadow-sm mb-4">
+            <div className="card-body">
+              <h6 className="fw-bold mb-3">Storico CO₂ (ultimi 7 giorni)</h6>
+              {logs.length === 0 ? (
+                <p className="text-muted text-center py-3">Nessun dato disponibile ancora.</p>
+              ) : (
+                <Line data={chartData} options={chartOptions} />
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
 
