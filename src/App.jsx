@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "react-router-dom"
 import { useState } from "react"
+import { isAdmin } from "./utils/auth"
 
 import Navbar from "./components/Navbar.jsx"
 import LoginPage from "./pages/LoginPage.jsx"
@@ -13,6 +14,8 @@ import RegisterPage from "./pages/RegisterPage.jsx"
 import DashboardPage from "./pages/DashboardPage.jsx"
 import NewLogPage from "./pages/NewLogPage.jsx"
 import GreenTipPage from "./pages/GreenTipPage.jsx"
+import ProfilePage from "./pages/ProfilePage.jsx"
+import UsersPage from "./pages/UsersPage.jsx"
 
 // AppContent sta DENTRO BrowserRouter così può usare useNavigate
 function AppContent() {
@@ -34,25 +37,31 @@ function AppContent() {
     navigate("/login")
   }
 
+  // controlliamo se l'utente è admin
+  const admin = token ? isAdmin() : false
+
   return (
     <>
-      {/* La Navbar è sempre visibile, le passiamo la funzione di logout */}
-      <Navbar onLogout={handleLogout} />
+      {/* NAvbar */}
+      <Navbar onLogout={handleLogout} isAdmin={admin} />
 
       <Routes>
-        {/* Rotta di default → login */}
+        {/* Rotte pubbliche */}
         <Route path="/" element={<Navigate to="/login" />} />
-
-        {/* Pagine pubbliche */}
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
 
-        {/* Pagine protette — se non c'è token si torna al login */}
+        {/* Rotte comuni a USER e ADMIN */}
         <Route path="/dashboard" element={token ? <DashboardPage /> : <Navigate to="/login" />} />
-        <Route path="/new-log" element={token ? <NewLogPage /> : <Navigate to="/login" />} />
-        <Route path="/green-tips" element={token ? <GreenTipPage /> : <Navigate to="/login" />} />
 
-        {/* Qualsiasi rotta sconosciuta → login */}
+        {/* Rotta solo USER */}
+        <Route path="/profile" element={token && !admin ? <ProfilePage /> : <Navigate to="/dashboard" />} />
+
+        {/* Rotte solo ADMIN */}
+        <Route path="/new-log" element={token && admin ? <NewLogPage /> : <Navigate to="/dashboard" />} />
+        <Route path="/green-tips" element={token && admin ? <GreenTipPage /> : <Navigate to="/dashboard" />} />
+        <Route path="/users" element={token && admin ? <UsersPage /> : <Navigate to="/dashboard" />} />
+
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Line } from "react-chartjs-2"
+import { useLocation } from "react-router-dom"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,6 +21,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const MEDIA_GLOBALE_KG = 13.0
 
 function DashboardPage() {
+  const location = useLocation()
   // Lista di tutti i log storici dell'utente
   const [logs, setLogs] = useState([])
 
@@ -36,6 +38,7 @@ function DashboardPage() {
   // useEffect — viene eseguito una volta quando la pagina si carica
   useEffect(() => {
     const fetchData = async () => {
+      console.log("fetchData eseguita!")
       try {
         // Carichiamo tutti i log storici e il log di oggi in parallelo
         const [allLogs, todayLogs] = await Promise.all([
@@ -56,6 +59,7 @@ function DashboardPage() {
         }
 
       } catch (err) {
+        console.log("Errore fetchData:", err)
         setError("Errore nel caricamento dei dati")
       } finally {
         setLoading(false)
@@ -63,7 +67,7 @@ function DashboardPage() {
     }
 
     fetchData()
-  }, [])
+  }, [location])
 
   // Prepariamo i dati per il grafico — ultimi 7 log
   const ultimi7 = logs.slice(-7)
