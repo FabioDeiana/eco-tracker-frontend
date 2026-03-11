@@ -27,8 +27,8 @@ function Navbar({ onLogout, isAdmin }) {
           <ul className="navbar-nav me-auto">
 
             <li className="nav-item">
-              <Link className={isActive("/dashboard")} to="/dashboard">
-                Dashboard
+              <Link className={isActive("/stats")} to="/stats">
+                Statistiche
               </Link>
             </li>
 

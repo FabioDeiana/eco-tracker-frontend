@@ -12,7 +12,7 @@ import Navbar from "./components/Navbar.jsx"
 import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegisterPage.jsx"
 import DashboardPage from "./pages/DashboardPage.jsx"
-import NewLogPage from "./pages/NewLogPage.jsx"
+import StatsPage from "./pages/StatsPage.jsx"
 import GreenTipPage from "./pages/GreenTipPage.jsx"
 import ProfilePage from "./pages/ProfilePage.jsx"
 import UsersPage from "./pages/UsersPage.jsx"
@@ -58,7 +58,7 @@ function AppContent() {
         <Route path="/profile" element={token && !admin ? <ProfilePage /> : <Navigate to="/dashboard" />} />
 
         {/* Rotte solo ADMIN */}
-        <Route path="/new-log" element={token && admin ? <NewLogPage /> : <Navigate to="/dashboard" />} />
+        <Route path="/stats" element={token && admin ? <StatsPage /> : <Navigate to="/dashboard" />} />
         <Route path="/green-tips" element={token && admin ? <GreenTipPage /> : <Navigate to="/dashboard" />} />
         <Route path="/users" element={token && admin ? <UsersPage /> : <Navigate to="/dashboard" />} />
 
