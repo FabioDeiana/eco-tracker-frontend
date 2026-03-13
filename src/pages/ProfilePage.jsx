@@ -1,33 +1,33 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import apiFetch from "../api/apiFetch"
 
 function ProfilePage() {
   const navigate = useNavigate()
+  const fileInputRef = useRef(null)
 
-  // Dati dell'utente
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
-  // Stato per il form di modifica
   const [showEditForm, setShowEditForm] = useState(false)
   const [formData, setFormData] = useState({ name: "", email: "", password: "" })
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState("")
   const [editSuccess, setEditSuccess] = useState("")
 
-  // Stato per conferma eliminazione account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
 
-  // Carichiamo i dati dell'utente loggato
+  // Stato per l'upload dell'avatar
+  const [avatarLoading, setAvatarLoading] = useState(false)
+  const [avatarError, setAvatarError] = useState("")
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await apiFetch("/users/me")
         setUser(data)
-        // Precompiliamo il form con i dati attuali
         setFormData({ name: data.name, email: data.email, password: "" })
       } catch (err) {
         setError("Errore nel caricamento del profilo")
@@ -42,13 +42,11 @@ function ProfilePage() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  // Aggiorna il profilo
   const handleUpdate = async (e) => {
     e.preventDefault()
     setEditError("")
     setEditSuccess("")
     setEditLoading(true)
-
     try {
       const updated = await apiFetch("/users/me", {
         method: "PUT",
@@ -64,17 +62,48 @@ function ProfilePage() {
     }
   }
 
-  // Elimina l'account
   const handleDelete = async () => {
     setDeleteLoading(true)
     try {
       await apiFetch("/users/me", { method: "DELETE" })
-      // Rimuoviamo il token e mandiamo al login
       localStorage.removeItem("token")
       navigate("/login")
     } catch (err) {
       setError("Errore durante l'eliminazione dell'account")
       setDeleteLoading(false)
+    }
+  }
+
+  // Gestisce il cambio avatar
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setAvatarError("")
+    setAvatarLoading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const token = localStorage.getItem("token")
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/users/me/avatar`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // NON impostare Content-Type: il browser lo gestisce automaticamente per FormData
+        },
+        body: formData,
+      })
+
+      if (!res.ok) throw new Error("Errore durante il caricamento dell'avatar")
+
+      const updated = await res.json()
+      setUser(updated)
+    } catch (err) {
+      setAvatarError("Errore nel caricamento dell'immagine")
+    } finally {
+      setAvatarLoading(false)
     }
   }
 
@@ -102,18 +131,52 @@ function ProfilePage() {
       <div className="row justify-content-center">
         <div className="col-md-6">
 
-          {/* Card dati profilo */}
           <div className="card shadow-sm mb-4">
             <div className="card-body">
 
               <div className="text-center mb-4">
-                {/* Avatar con iniziale del nome */}
-                <div
-                  className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-3"
-                  style={{ width: "80px", height: "80px", fontSize: "2rem" }}
-                >
-                  {user.name.charAt(0).toUpperCase()}
+
+                {/* Avatar: immagine se presente, altrimenti iniziale */}
+                <div className="position-relative d-inline-block mb-3">
+                  {user.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt="Avatar"
+                      className="rounded-circle"
+                      style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <div
+                      className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center"
+                      style={{ width: "80px", height: "80px", fontSize: "2rem" }}
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+
+                  {/* Pulsante modifica avatar sovrapposto */}
+                  <button
+                    className="btn btn-sm btn-success rounded-circle position-absolute"
+                    style={{ bottom: 0, right: 0, width: "26px", height: "26px", padding: 0, fontSize: "0.75rem" }}
+                    onClick={() => fileInputRef.current.click()}
+                    disabled={avatarLoading}
+                    title="Cambia avatar"
+                  >
+                    {avatarLoading ? "..." : "✏️"}
+                  </button>
+
+                  {/* Input file nascosto */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleAvatarChange}
+                  />
                 </div>
+
+                {avatarError && <div className="alert alert-danger py-1 small">{avatarError}</div>}
+
                 <h5 className="fw-bold mb-0">{user.name}</h5>
                 <p className="text-muted">{user.email}</p>
                 <span className="badge bg-success">{user.role}</span>
@@ -128,7 +191,6 @@ function ProfilePage() {
 
               {editSuccess && <div className="alert alert-success py-2 mt-3">{editSuccess}</div>}
 
-              {/* Bottoni azioni */}
               <div className="d-flex gap-2 mt-3">
                 <button
                   className="btn btn-outline-success w-100"
@@ -152,48 +214,21 @@ function ProfilePage() {
             <div className="card shadow-sm mb-4">
               <div className="card-body">
                 <h6 className="fw-bold mb-3">Modifica profilo</h6>
-
                 {editError && <div className="alert alert-danger py-2">{editError}</div>}
-
                 <form onSubmit={handleUpdate}>
                   <div className="mb-3">
                     <label className="form-label">Nome</label>
-                    <input
-                      type="text"
-                      name="name"
-                      className="form-control"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
+                    <input type="text" name="name" className="form-control" value={formData.name} onChange={handleChange} required />
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      className="form-control"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
+                    <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} required />
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Nuova password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      className="form-control"
-                      placeholder="Lascia vuoto per non cambiarla"
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
+                    <input type="password" name="password" className="form-control" placeholder="Lascia vuoto per non cambiarla" value={formData.password} onChange={handleChange} />
                   </div>
-                  <button
-                    type="submit"
-                    className="btn btn-success w-100"
-                    disabled={editLoading}
-                  >
+                  <button type="submit" className="btn btn-success w-100" disabled={editLoading}>
                     {editLoading ? "Salvataggio..." : "Salva modifiche"}
                   </button>
                 </form>
@@ -201,7 +236,7 @@ function ProfilePage() {
             </div>
           )}
 
-          {/* Conferma eliminazione account */}
+          {/* Conferma eliminazione */}
           {showDeleteConfirm && (
             <div className="card shadow-sm border-danger mb-4">
               <div className="card-body">
@@ -210,17 +245,10 @@ function ProfilePage() {
                   Eliminando il tuo account perderai tutti i tuoi dati, log e attività. Questa azione è irreversibile.
                 </p>
                 <div className="d-flex gap-2">
-                  <button
-                    className="btn btn-danger w-100"
-                    onClick={handleDelete}
-                    disabled={deleteLoading}
-                  >
+                  <button className="btn btn-danger w-100" onClick={handleDelete} disabled={deleteLoading}>
                     {deleteLoading ? "Eliminazione..." : "Sì, elimina account"}
                   </button>
-                  <button
-                    className="btn btn-outline-secondary w-100"
-                    onClick={() => setShowDeleteConfirm(false)}
-                  >
+                  <button className="btn btn-outline-secondary w-100" onClick={() => setShowDeleteConfirm(false)}>
                     Annulla
                   </button>
                 </div>
