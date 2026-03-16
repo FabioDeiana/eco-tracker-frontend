@@ -165,7 +165,7 @@ function StatsPage() {
 
         {/* Grafico CO₂ per data */}
         <div className="col-lg-8">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm mb-4">
             <div className="card-body">
               <h6 className="fw-bold mb-3">CO₂ emessa per giorno (tutti gli utenti)</h6>
               {logs.length === 0 ? (
@@ -213,6 +213,7 @@ function StatsPage() {
               ) : (
                 <ul className="list-group list-group-flush">
                   {co2PerUtente
+                    .filter((u) => u.totalCo2 > 0)
                     .sort((a, b) => a.totalCo2 - b.totalCo2) // dal più virtuoso al meno
                     .map((u, index) => (
                       <li key={u.email} className="list-group-item d-flex justify-content-between align-items-center px-0">

@@ -48,7 +48,7 @@ function DashboardPage() {
   const [formData, setFormData] = useState({ type: "CAR", value: "" });
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState("");
-  const [mediaGlobale, setMediaGlobale] = useState(0)
+  const [mediaGlobale, setMediaGlobale] = useState(0);
 
   // Carica i dati della dashboard
   const fetchData = async () => {
@@ -218,16 +218,12 @@ function DashboardPage() {
 
   const co2Oggi = todayLog ? todayLog.totalCo2 : 0;
 
-  
-
   const differenza = co2Oggi - mediaGlobale;
   const isMeglio = differenza < 0;
 
   const selectedType = ACTIVITY_TYPES.find((a) => a.value === formData.type);
 
   if (loading) {
-    console.log("logs:", logs);
-    console.log("mediaGlobale:", mediaGlobale);
     return (
       <div className="container mt-5 text-center">
         <div className="spinner-border text-success" role="status" />
@@ -277,7 +273,9 @@ function DashboardPage() {
                     {differenza.toFixed(2)}
                   </h2>
                   <p className="text-muted">
-                    {isMeglio ? "🌿 Sotto la media globale!" : "⚠️ Sopra la media globale"}
+                    {isMeglio
+                      ? "🌿 Sotto la media globale!"
+                      : "⚠️ Sopra la media globale"}
                   </p>
                 </>
               )}
@@ -407,11 +405,29 @@ function DashboardPage() {
 
         {/* Colonna destra — grafico + tips */}
         <div className="col-lg-7">
-          {/* Green Tips suggeriti */}
-          {suggestedTips.length > 0 && (
-            <div className="card shadow-sm">
-              <div className="card-body">
-                <h6 className="fw-bold mb-3">🌿 Consigli per te</h6>
+          {/* Grafico storico */}
+          <div className="card shadow-sm mb-4">
+            <div className="card-body">
+              <h6 className="fw-bold mb-3">Storico CO₂ (ultimi 7 giorni)</h6>
+              {logs.length === 0 ? (
+                <p className="text-muted text-center py-3">
+                  Nessun dato disponibile ancora.
+                </p>
+              ) : (
+                <Line data={chartData} options={chartOptions} />
+              )}
+            </div>
+          </div>
+
+          {/* Green Tips — sempre visibile */}
+          <div className="card shadow-sm mb-4">
+            <div className="card-body">
+              <h6 className="fw-bold mb-3">🌿 Consigli per te</h6>
+              {suggestedTips.length === 0 ? (
+                <p className="text-muted text-center py-3">
+                  Aggiungi attività per ricevere consigli personalizzati.
+                </p>
+              ) : (
                 <div className="row g-2">
                   {suggestedTips.map((tip) => (
                     <div key={tip.id} className="col-12">
@@ -434,20 +450,6 @@ function DashboardPage() {
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Grafico storico */}
-          <div className="card shadow-sm mb-4">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">Storico CO₂ (ultimi 7 giorni)</h6>
-              {logs.length === 0 ? (
-                <p className="text-muted text-center py-3">
-                  Nessun dato disponibile ancora.
-                </p>
-              ) : (
-                <Line data={chartData} options={chartOptions} />
               )}
             </div>
           </div>
