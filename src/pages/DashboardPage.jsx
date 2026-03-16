@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react"
-import { Line } from "react-chartjs-2"
-import { useLocation } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import { useLocation } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,114 +11,123 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js"
-import apiFetch from "../api/apiFetch"
+} from "chart.js";
+import apiFetch from "../api/apiFetch";
 
 // Registriamo i componenti di Chart.js — Filler serve per il fill: true del grafico
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Title, Tooltip, Legend)
-
-const MEDIA_GLOBALE_KG = 13.0
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const ACTIVITY_TYPES = [
-  { value: "CAR",         label: "🚗 Auto",         unit: "km" },
-  { value: "MEAT",        label: "🥩 Carne",         unit: "kg" },
-  { value: "ELECTRICITY", label: "⚡ Elettricità",   unit: "kWh" },
-  { value: "FLIGHT",      label: "✈️ Volo",          unit: "km" },
-  { value: "HEATING",     label: "🔥 Riscaldamento", unit: "kWh" },
-]
+  { value: "CAR", label: "🚗 Auto", unit: "km" },
+  { value: "MEAT", label: "🥩 Carne", unit: "kg" },
+  { value: "ELECTRICITY", label: "⚡ Elettricità", unit: "kWh" },
+  { value: "FLIGHT", label: "✈️ Volo", unit: "km" },
+  { value: "HEATING", label: "🔥 Riscaldamento", unit: "kWh" },
+];
 
 function DashboardPage() {
-  const location = useLocation()
+  const location = useLocation();
 
-  const [logs, setLogs] = useState([])
-  const [todayLog, setTodayLog] = useState(null)
-  const [todayActivities, setTodayActivities] = useState([])
-  const [suggestedTips, setSuggestedTips] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [logs, setLogs] = useState([]);
+  const [todayLog, setTodayLog] = useState(null);
+  const [todayActivities, setTodayActivities] = useState([]);
+  const [suggestedTips, setSuggestedTips] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Stato form aggiunta attività
-  const [formData, setFormData] = useState({ type: "CAR", value: "" })
-  const [formLoading, setFormLoading] = useState(false)
-  const [formError, setFormError] = useState("")
+  const [formData, setFormData] = useState({ type: "CAR", value: "" });
+  const [formLoading, setFormLoading] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [mediaGlobale, setMediaGlobale] = useState(0)
 
   // Carica i dati della dashboard
   const fetchData = async () => {
-    setLoading(true)
-    setError("")
+    setLoading(true);
+    setError("");
     try {
-      const [allLogs, todayLogs] = await Promise.all([
+      const [allLogs, todayLogs, media] = await Promise.all([
         apiFetch("/logs/me"),
         apiFetch("/logs/me/today"),
-      ])
+        apiFetch("/logs/stats/media"),
+      ]);
 
-      setLogs(allLogs)
+      setLogs(allLogs);
+      setMediaGlobale(parseFloat(media));
 
-      const today = todayLogs.length > 0 ? todayLogs[0] : null
-      setTodayLog(today)
+      const today = todayLogs.length > 0 ? todayLogs[0] : null;
+      setTodayLog(today);
 
       if (today) {
-        const activities = await apiFetch(`/logs/${today.id}/activities`)
-        setTodayActivities(activities)
+        const activities = await apiFetch(`/logs/${today.id}/activities`);
+        setTodayActivities(activities);
 
         // Carichiamo i tips suggeriti in base alle categorie delle attività di oggi
-        await fetchSuggestedTips(activities)
+        await fetchSuggestedTips(activities);
       }
-
     } catch (err) {
-      setError("Errore nel caricamento dei dati")
+      console.log("ERRORE:", err);
+      setError("Errore nel caricamento dei dati");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Carica i green tips in base alle attività registrate oggi
   const fetchSuggestedTips = async (activities) => {
     if (activities.length === 0) {
-      setSuggestedTips([])
-      return
+      setSuggestedTips([]);
+      return;
     }
 
     try {
       // Prendiamo le categorie uniche delle attività di oggi
-      const categories = [...new Set(activities.map((a) => a.type))]
+      const categories = [...new Set(activities.map((a) => a.type))];
 
       // Per ogni categoria carichiamo i tips — in parallelo
       const tipsArrays = await Promise.all(
-        categories.map((cat) => apiFetch(`/tips/category?category=${cat}`))
-      )
+        categories.map((cat) => apiFetch(`/tips/category?category=${cat}`)),
+      );
 
       // Uniamo tutti i tips in un unico array
-      const allTips = tipsArrays.flat()
-      setSuggestedTips(allTips)
-
+      const allTips = tipsArrays.flat();
+      setSuggestedTips(allTips);
     } catch (err) {
       // Se fallisce non blocchiamo la dashboard — i tips sono opzionali
-      setSuggestedTips([])
+      setSuggestedTips([]);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchData()
-  }, [location])
+    fetchData();
+  }, [location]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   // Aggiunge una nuova attività — crea il log se non esiste ancora
   const handleAddActivity = async (e) => {
-    e.preventDefault()
-    setFormError("")
-    setFormLoading(true)
+    e.preventDefault();
+    setFormError("");
+    setFormLoading(true);
 
     try {
       // Se non esiste ancora il log di oggi lo creiamo
-      let currentLogId = todayLog?.id
+      let currentLogId = todayLog?.id;
       if (!currentLogId) {
-        const newLog = await apiFetch("/logs", { method: "POST" })
-        setTodayLog(newLog)
-        currentLogId = newLog.id
+        const newLog = await apiFetch("/logs", { method: "POST" });
+        setTodayLog(newLog);
+        currentLogId = newLog.id;
       }
 
       // Aggiungiamo l'attività al log
@@ -128,58 +137,58 @@ function DashboardPage() {
           type: formData.type,
           value: parseFloat(formData.value),
         }),
-      })
+      });
 
       // Aggiorniamo la lista attività localmente
-      const updatedActivities = [...todayActivities, newActivity]
-      setTodayActivities(updatedActivities)
+      const updatedActivities = [...todayActivities, newActivity];
+      setTodayActivities(updatedActivities);
 
       // Aggiorniamo il totale CO₂ localmente
       setTodayLog((prev) => ({
         ...prev,
         totalCo2: (prev?.totalCo2 || 0) + newActivity.co2Emission,
-      }))
+      }));
 
       // Aggiorniamo i tips suggeriti
-      await fetchSuggestedTips(updatedActivities)
+      await fetchSuggestedTips(updatedActivities);
 
       // Resettiamo il form
-      setFormData({ ...formData, value: "" })
-
+      setFormData({ ...formData, value: "" });
     } catch (err) {
-      setFormError(err.message || "Errore durante l'aggiunta dell'attività")
+      setFormError(err.message || "Errore durante l'aggiunta dell'attività");
     } finally {
-      setFormLoading(false)
+      setFormLoading(false);
     }
-  }
+  };
 
   // Elimina un'attività
   const handleDeleteActivity = async (activityId, co2Emission) => {
     try {
       await apiFetch(`/logs/${todayLog.id}/activities/${activityId}`, {
         method: "DELETE",
-      })
+      });
 
       // Aggiorniamo la lista attività localmente
-      const updatedActivities = todayActivities.filter((a) => a.id !== activityId)
-      setTodayActivities(updatedActivities)
+      const updatedActivities = todayActivities.filter(
+        (a) => a.id !== activityId,
+      );
+      setTodayActivities(updatedActivities);
 
       // Sottraiamo la CO₂ dal totale
       setTodayLog((prev) => ({
         ...prev,
         totalCo2: Math.max(0, (prev?.totalCo2 || 0) - co2Emission),
-      }))
+      }));
 
       // Aggiorniamo i tips suggeriti
-      await fetchSuggestedTips(updatedActivities)
-
+      await fetchSuggestedTips(updatedActivities);
     } catch (err) {
-      setError("Errore durante l'eliminazione dell'attività")
+      setError("Errore durante l'eliminazione dell'attività");
     }
-  }
+  };
 
   // Dati per il grafico
-  const ultimi7 = logs.slice(-7)
+  const ultimi7 = logs.slice(-7);
   const chartData = {
     labels: ultimi7.map((log) => log.date),
     datasets: [
@@ -192,7 +201,7 @@ function DashboardPage() {
         fill: true,
       },
     ],
-  }
+  };
 
   const chartOptions = {
     responsive: true,
@@ -205,20 +214,26 @@ function DashboardPage() {
         title: { display: true, text: "kg CO₂" },
       },
     },
-  }
+  };
 
-  const co2Oggi = todayLog ? todayLog.totalCo2 : 0
-  const differenza = co2Oggi - MEDIA_GLOBALE_KG
-  const isMeglio = differenza < 0
-  const selectedType = ACTIVITY_TYPES.find((a) => a.value === formData.type)
+  const co2Oggi = todayLog ? todayLog.totalCo2 : 0;
+
+  
+
+  const differenza = co2Oggi - mediaGlobale;
+  const isMeglio = differenza < 0;
+
+  const selectedType = ACTIVITY_TYPES.find((a) => a.value === formData.type);
 
   if (loading) {
+    console.log("logs:", logs);
+    console.log("mediaGlobale:", mediaGlobale);
     return (
       <div className="container mt-5 text-center">
         <div className="spinner-border text-success" role="status" />
         <p className="mt-2 text-muted">Caricamento...</p>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -226,7 +241,7 @@ function DashboardPage() {
       <div className="container mt-5">
         <div className="alert alert-danger">{error}</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -248,10 +263,24 @@ function DashboardPage() {
           <div className="card shadow-sm h-100">
             <div className="card-body text-center">
               <p className="text-muted mb-1">Vs media globale</p>
-              <h2 className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}>
-                {isMeglio ? "" : "+"}{differenza.toFixed(2)}
-              </h2>
-              <p className="text-muted">{isMeglio ? "🌿 Sotto la media!" : "⚠️ Sopra la media"}</p>
+              {todayActivities.length === 0 ? (
+                <>
+                  <h2 className="fw-bold text-muted">—</h2>
+                  <p className="text-muted">Nessuna attività oggi</p>
+                </>
+              ) : (
+                <>
+                  <h2
+                    className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}
+                  >
+                    {isMeglio ? "" : "+"}
+                    {differenza.toFixed(2)}
+                  </h2>
+                  <p className="text-muted">
+                    {isMeglio ? "🌿 Sotto la media globale!" : "⚠️ Sopra la media globale"}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -267,16 +296,16 @@ function DashboardPage() {
       </div>
 
       <div className="row g-4">
-
         {/* Colonna sinistra — form + attività */}
         <div className="col-lg-5">
-
           {/* Form aggiunta attività */}
           <div className="card shadow-sm mb-4">
             <div className="card-body">
               <h6 className="fw-bold mb-3">Aggiungi attività</h6>
 
-              {formError && <div className="alert alert-danger py-2">{formError}</div>}
+              {formError && (
+                <div className="alert alert-danger py-2">{formError}</div>
+              )}
 
               <form onSubmit={handleAddActivity}>
                 <div className="mb-3">
@@ -288,12 +317,16 @@ function DashboardPage() {
                     onChange={handleChange}
                   >
                     {ACTIVITY_TYPES.map((a) => (
-                      <option key={a.value} value={a.value}>{a.label}</option>
+                      <option key={a.value} value={a.value}>
+                        {a.label}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Quantità ({selectedType.unit})</label>
+                  <label className="form-label">
+                    Quantità ({selectedType.unit})
+                  </label>
                   <input
                     type="number"
                     name="value"
@@ -322,15 +355,30 @@ function DashboardPage() {
             <div className="card-body">
               <h6 className="fw-bold mb-3">Attività di oggi</h6>
               {todayActivities.length === 0 ? (
-                <p className="text-muted text-center py-3">Nessuna attività registrata oggi.</p>
+                <p className="text-muted text-center py-3">
+                  Nessuna attività registrata oggi.
+                </p>
               ) : (
                 <ul className="list-group list-group-flush">
                   {todayActivities.map((activity) => (
-                    <li key={activity.id} className="list-group-item d-flex justify-content-between align-items-center">
+                    <li
+                      key={activity.id}
+                      className="list-group-item d-flex justify-content-between align-items-center"
+                    >
                       <div>
-                        <span>{ACTIVITY_TYPES.find((a) => a.value === activity.type)?.label || activity.type}</span>
+                        <span>
+                          {ACTIVITY_TYPES.find((a) => a.value === activity.type)
+                            ?.label || activity.type}
+                        </span>
                         <br />
-                        <small className="text-muted">{activity.value} {ACTIVITY_TYPES.find((a) => a.value === activity.type)?.unit}</small>
+                        <small className="text-muted">
+                          {activity.value}{" "}
+                          {
+                            ACTIVITY_TYPES.find(
+                              (a) => a.value === activity.type,
+                            )?.unit
+                          }
+                        </small>
                       </div>
                       <div className="d-flex align-items-center gap-2">
                         <span className="badge bg-success rounded-pill">
@@ -339,7 +387,12 @@ function DashboardPage() {
                         {/* Bottone elimina */}
                         <button
                           className="btn btn-outline-danger btn-sm"
-                          onClick={() => handleDeleteActivity(activity.id, activity.co2Emission)}
+                          onClick={() =>
+                            handleDeleteActivity(
+                              activity.id,
+                              activity.co2Emission,
+                            )
+                          }
                         >
                           🗑️
                         </button>
@@ -350,14 +403,10 @@ function DashboardPage() {
               )}
             </div>
           </div>
-
         </div>
 
         {/* Colonna destra — grafico + tips */}
         <div className="col-lg-7">
-
-          
-
           {/* Green Tips suggeriti */}
           {suggestedTips.length > 0 && (
             <div className="card shadow-sm">
@@ -369,11 +418,17 @@ function DashboardPage() {
                       <div className="card border-success">
                         <div className="card-body py-2">
                           <span className="badge bg-success mb-1">
-                            {ACTIVITY_TYPES.find((a) => a.value === tip.category)?.label || tip.category}
+                            {ACTIVITY_TYPES.find(
+                              (a) => a.value === tip.category,
+                            )?.label || tip.category}
                           </span>
                           <p className="fw-bold mb-1 small">{tip.title}</p>
-                          <p className="text-muted mb-1 small">{tip.description}</p>
-                          <small className="text-success">🌿 Risparmio stimato: {tip.co2SavedEstimate} kg CO₂</small>
+                          <p className="text-muted mb-1 small">
+                            {tip.description}
+                          </p>
+                          <small className="text-success">
+                            🌿 Risparmio stimato: {tip.co2SavedEstimate} kg CO₂
+                          </small>
                         </div>
                       </div>
                     </div>
@@ -388,18 +443,18 @@ function DashboardPage() {
             <div className="card-body">
               <h6 className="fw-bold mb-3">Storico CO₂ (ultimi 7 giorni)</h6>
               {logs.length === 0 ? (
-                <p className="text-muted text-center py-3">Nessun dato disponibile ancora.</p>
+                <p className="text-muted text-center py-3">
+                  Nessun dato disponibile ancora.
+                </p>
               ) : (
                 <Line data={chartData} options={chartOptions} />
               )}
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
-  )
+  );
 }
 
-export default DashboardPage
+export default DashboardPage;

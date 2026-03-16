@@ -1,15 +1,15 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
 
 // Riceviamo onLogout e isAdmin da App.jsx
 function Navbar({ onLogout, isAdmin }) {
-  const location = useLocation()
+  const location = useLocation();
 
-  const isActive = (path) => location.pathname === path ? "nav-link active" : "nav-link"
+  const isActive = (path) =>
+    location.pathname === path ? "nav-link active" : "nav-link";
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-success">
       <div className="container">
-
         <Link className="navbar-brand fw-bold" to="/dashboard">
           🌿 Eco-Tracker
         </Link>
@@ -25,16 +25,18 @@ function Navbar({ onLogout, isAdmin }) {
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto">
-
             <li className="nav-item">
-              <Link className={isActive("/stats")} to="/stats">
-                Statistiche
+              <Link className={isActive("/dashboard")} to="/dashboard">
+                Dashboard
               </Link>
             </li>
-
-            {/* Link visibili solo all'ADMIN */}
             {isAdmin && (
               <>
+                <li className="nav-item">
+                  <Link className={isActive("/stats")} to="/stats">
+                    Statistiche
+                  </Link>
+                </li>
                 <li className="nav-item">
                   <Link className={isActive("/users")} to="/users">
                     Utenti
@@ -47,8 +49,6 @@ function Navbar({ onLogout, isAdmin }) {
                 </li>
               </>
             )}
-
-            {/* Link visibili solo allo USER */}
             {!isAdmin && (
               <li className="nav-item">
                 <Link className={isActive("/profile")} to="/profile">
@@ -56,17 +56,15 @@ function Navbar({ onLogout, isAdmin }) {
                 </Link>
               </li>
             )}
-
           </ul>
 
           <button className="btn btn-outline-light" onClick={onLogout}>
             Logout
           </button>
         </div>
-
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
