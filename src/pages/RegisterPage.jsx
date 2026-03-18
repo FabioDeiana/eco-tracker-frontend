@@ -1,70 +1,82 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import axios from "axios"
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function RegisterPage({ onLogin }) {
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-  })
+  });
 
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     // Log temporaneo per debug
-    console.log("URL chiamata:", `${import.meta.env.VITE_API_URL}/auth/register`)
-    setError("")
-    setLoading(true)
+    console.log(
+      "URL chiamata:",
+      `${import.meta.env.VITE_API_URL}/auth/register`,
+    );
+    setError("");
+    setLoading(true);
 
     try {
       // Step 1 — registriamo l'utente
-      await axios.post(
+      const regRes = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/register`,
-        formData
-      )
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
+      if (!regRes.ok) {
+        const regData = await regRes.json();
+        throw new Error(regData.message || "Errore durante la registrazione");
+      }
 
       // Step 2 — login automatico con le stesse credenziali
-      const loginResponse = await axios.post(
+      const loginRes = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/login`,
         {
-          email: formData.email,
-          password: formData.password,
-        }
-      )
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        },
+      );
+      const loginData = await loginRes.json();
+      if (!loginRes.ok)
+        throw new Error(loginData.message || "Errore nel login");
 
-      // Step 3 — passiamo il token ad App.jsx → redirect alla dashboard
-      onLogin(loginResponse.data.token)
-
+      // Step 3 — passiamo il token ad App.jsx
+      onLogin(loginData.token);
     } catch (err) {
-      setError(err.response?.data?.message || "Errore durante la registrazione")
-    } finally {
-      setLoading(false)
+      setError(err.message || "Errore durante la registrazione");
     }
-  }
+  };
 
   return (
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
-      <div className="card shadow p-4" style={{ width: "100%", maxWidth: "420px" }}>
-
+      <div
+        className="card shadow p-4"
+        style={{ width: "100%", maxWidth: "420px" }}
+      >
         <div className="text-center mb-4">
           <h2 className="fw-bold text-success">🌿 Eco-Tracker</h2>
           <p className="text-muted">Crea il tuo account</p>
         </div>
 
-        {error && (
-          <div className="alert alert-danger py-2">{error}</div>
-        )}
+        {error && <div className="alert alert-danger py-2">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-
           {/* Un solo campo name — corrisponde esattamente al DTO del backend */}
           <div className="mb-3">
             <label className="form-label">Nome completo</label>
@@ -112,7 +124,6 @@ function RegisterPage({ onLogin }) {
           >
             {loading ? "Registrazione in corso..." : "Registrati"}
           </button>
-
         </form>
 
         <div className="text-center mt-3">
@@ -123,10 +134,9 @@ function RegisterPage({ onLogin }) {
             </Link>
           </small>
         </div>
-
       </div>
     </div>
-  )
+  );
 }
 
-export default RegisterPage
+export default RegisterPage;

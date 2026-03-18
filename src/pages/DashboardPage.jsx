@@ -241,216 +241,258 @@ function DashboardPage() {
   }
 
   return (
-    <div className="container mt-4">
-      <h4 className="fw-bold text-success mb-4">La tua Dashboard</h4>
+    <div style={{ backgroundColor: "#f5f6f5", minHeight: "100vh" }}>
+      <div className="container mt-4 mb-5 pt-3">
+        <h4 className="fw-bold text-success mb-4">La tua Dashboard</h4>
 
-      {/* Cards CO₂ */}
-      <div className="row g-3 mb-4">
-        <div className="col-md-4">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">CO₂ oggi</p>
-              <h2 className="fw-bold text-success">{co2Oggi.toFixed(2)}</h2>
-              <p className="text-muted">kg CO₂</p>
+        {/* Cards CO₂ */}
+        <div className="row g-3 mb-4">
+          <div className="col-md-4">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                background: "linear-gradient(135deg, #d4edda, #f0fff4)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>🌱</div>
+                <p className="text-muted mb-1 mt-2">CO₂ oggi</p>
+                <h2 className="fw-bold text-success">{co2Oggi.toFixed(2)}</h2>
+                <p className="text-muted small">kg CO₂</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">Vs media globale</p>
-              {todayActivities.length === 0 ? (
-                <>
-                  <h2 className="fw-bold text-muted">—</h2>
-                  <p className="text-muted">Nessuna attività oggi</p>
-                </>
-              ) : (
-                <>
-                  <h2
-                    className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}
-                  >
-                    {isMeglio ? "" : "+"}
-                    {differenza.toFixed(2)}
-                  </h2>
-                  <p className="text-muted">
-                    {isMeglio
-                      ? "🌿 Sotto la media globale!"
-                      : "⚠️ Sopra la media globale"}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">Attività oggi</p>
-              <h2 className="fw-bold text-success">{todayActivities.length}</h2>
-              <p className="text-muted">attività registrate</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="row g-4">
-        {/* Colonna sinistra — form + attività */}
-        <div className="col-lg-5">
-          {/* Form aggiunta attività */}
-          <div className="card shadow-sm mb-4">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">Aggiungi attività</h6>
-
-              {formError && (
-                <div className="alert alert-danger py-2">{formError}</div>
-              )}
-
-              <form onSubmit={handleAddActivity}>
-                <div className="mb-3">
-                  <label className="form-label">Tipo</label>
-                  <select
-                    name="type"
-                    className="form-select"
-                    value={formData.type}
-                    onChange={handleChange}
-                  >
-                    {ACTIVITY_TYPES.map((a) => (
-                      <option key={a.value} value={a.value}>
-                        {a.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">
-                    Quantità ({selectedType.unit})
-                  </label>
-                  <input
-                    type="number"
-                    name="value"
-                    className="form-control"
-                    placeholder={`es. 10 ${selectedType.unit}`}
-                    value={formData.value}
-                    onChange={handleChange}
-                    min="0"
-                    step="0.1"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-success w-100"
-                  disabled={formLoading}
-                >
-                  {formLoading ? "Aggiunta..." : "Aggiungi attività"}
-                </button>
-              </form>
-            </div>
-          </div>
-
-          {/* Lista attività di oggi */}
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">Attività di oggi</h6>
-              {todayActivities.length === 0 ? (
-                <p className="text-muted text-center py-3">
-                  Nessuna attività registrata oggi.
-                </p>
-              ) : (
-                <ul className="list-group list-group-flush">
-                  {todayActivities.map((activity) => (
-                    <li
-                      key={activity.id}
-                      className="list-group-item d-flex justify-content-between align-items-center"
+          <div className="col-md-4">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                background: isMeglio
+                  ? "linear-gradient(135deg, #d4edda, #f0fff4)"
+                  : "linear-gradient(135deg, #fde8e8, #fff5f5)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>{isMeglio ? "🌍" : "⚠️"}</div>
+                <p className="text-muted mb-1 mt-2">Vs media globale</p>
+                {todayActivities.length === 0 ? (
+                  <>
+                    <h2 className="fw-bold text-muted">—</h2>
+                    <p className="text-muted small">Nessuna attività oggi</p>
+                  </>
+                ) : (
+                  <>
+                    <h2
+                      className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}
                     >
-                      <div>
-                        <span>
-                          {ACTIVITY_TYPES.find((a) => a.value === activity.type)
-                            ?.label || activity.type}
-                        </span>
-                        <br />
-                        <small className="text-muted">
-                          {activity.value}{" "}
-                          {
-                            ACTIVITY_TYPES.find(
-                              (a) => a.value === activity.type,
-                            )?.unit
-                          }
-                        </small>
-                      </div>
-                      <div className="d-flex align-items-center gap-2">
-                        <span className="badge bg-success rounded-pill">
-                          {activity.co2Emission?.toFixed(2)} kg CO₂
-                        </span>
-                        {/* Bottone elimina */}
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={() =>
-                            handleDeleteActivity(
-                              activity.id,
-                              activity.co2Emission,
-                            )
-                          }
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                      {isMeglio ? "" : "+"}
+                      {differenza.toFixed(2)}
+                    </h2>
+                    <p className="small text-muted">
+                      {isMeglio
+                        ? "🌿 Sotto la media globale!"
+                        : "⚠️ Sopra la media globale"}
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                background: "linear-gradient(135deg, #dbeafe, #f0f7ff)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>📋</div>
+                <p className="text-muted mb-1 mt-2">Attività oggi</p>
+                <h2 className="fw-bold" style={{ color: "#2563eb" }}>
+                  {todayActivities.length}
+                </h2>
+                <p className="text-muted small">attività registrate</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Colonna destra — grafico + tips */}
-        <div className="col-lg-7">
-          {/* Grafico storico */}
-          <div className="card shadow-sm mb-4">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">Storico CO₂ (ultimi 7 giorni)</h6>
-              {logs.length === 0 ? (
-                <p className="text-muted text-center py-3">
-                  Nessun dato disponibile ancora.
-                </p>
-              ) : (
-                <Line data={chartData} options={chartOptions} />
-              )}
+        <div className="row g-4">
+          {/* Colonna sinistra — form + attività + consigli */}
+          <div className="col-lg-5">
+            {/* Form aggiunta attività */}
+            <div
+              className="card shadow-sm mb-4 border-0"
+              style={{ borderRadius: "16px", borderLeft: "4px solid #198754" }}
+            >
+              <div className="card-body">
+                <h6 className="fw-bold mb-3">➕ Aggiungi attività</h6>
+                {formError && (
+                  <div className="alert alert-danger py-2">{formError}</div>
+                )}
+                <form onSubmit={handleAddActivity}>
+                  <div className="mb-3">
+                    <label className="form-label">Tipo</label>
+                    <select
+                      name="type"
+                      className="form-select"
+                      value={formData.type}
+                      onChange={handleChange}
+                    >
+                      {ACTIVITY_TYPES.map((a) => (
+                        <option key={a.value} value={a.value}>
+                          {a.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      Quantità ({selectedType.unit})
+                    </label>
+                    <input
+                      type="number"
+                      name="value"
+                      className="form-control"
+                      placeholder={`es. 10 ${selectedType.unit}`}
+                      value={formData.value}
+                      onChange={handleChange}
+                      min="0"
+                      step="0.1"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-success w-100"
+                    disabled={formLoading}
+                  >
+                    {formLoading ? "Aggiunta..." : "Aggiungi attività"}
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
 
-          {/* Green Tips — sempre visibile */}
-          <div className="card shadow-sm mb-4">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">🌿 Consigli per te</h6>
-              {suggestedTips.length === 0 ? (
-                <p className="text-muted text-center py-3">
-                  Aggiungi attività per ricevere consigli personalizzati.
-                </p>
-              ) : (
-                <div className="row g-2">
-                  {suggestedTips.map((tip) => (
-                    <div key={tip.id} className="col-12">
-                      <div className="card border-success">
-                        <div className="card-body py-2">
-                          <span className="badge bg-success mb-1">
+            {/* Lista attività di oggi */}
+            <div
+              className="card shadow-sm mb-4 border-0"
+              style={{ borderRadius: "16px", borderLeft: "4px solid #0d6efd" }}
+            >
+              <div className="card-body">
+                <h6 className="fw-bold mb-3">📋 Attività di oggi</h6>
+                {todayActivities.length === 0 ? (
+                  <p className="text-muted text-center py-3">
+                    Nessuna attività registrata oggi.
+                  </p>
+                ) : (
+                  <ul className="list-group list-group-flush">
+                    {todayActivities.map((activity) => (
+                      <li
+                        key={activity.id}
+                        className="list-group-item d-flex justify-content-between align-items-center px-0"
+                      >
+                        <div>
+                          <span>
                             {ACTIVITY_TYPES.find(
-                              (a) => a.value === tip.category,
-                            )?.label || tip.category}
+                              (a) => a.value === activity.type,
+                            )?.label || activity.type}
                           </span>
-                          <p className="fw-bold mb-1 small">{tip.title}</p>
-                          <p className="text-muted mb-1 small">
-                            {tip.description}
-                          </p>
-                          <small className="text-success">
-                            🌿 Risparmio stimato: {tip.co2SavedEstimate} kg CO₂
+                          <br />
+                          <small className="text-muted">
+                            {activity.value}{" "}
+                            {
+                              ACTIVITY_TYPES.find(
+                                (a) => a.value === activity.type,
+                              )?.unit
+                            }
                           </small>
                         </div>
+                        <div className="d-flex align-items-center gap-2">
+                          <span className="badge bg-success rounded-pill">
+                            {activity.co2Emission?.toFixed(2)} kg CO₂
+                          </span>
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() =>
+                              handleDeleteActivity(
+                                activity.id,
+                                activity.co2Emission,
+                              )
+                            }
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            {/* Green Tips */}
+            <div
+              className="card shadow-sm mb-4 border-0"
+              style={{ borderRadius: "16px", borderLeft: "4px solid #20c997" }}
+            >
+              <div className="card-body">
+                <h6 className="fw-bold mb-3">🌿 Consigli per te</h6>
+                {suggestedTips.length === 0 ? (
+                  <p className="text-muted text-center py-3">
+                    Aggiungi attività per ricevere consigli personalizzati.
+                  </p>
+                ) : (
+                  <div className="row g-2">
+                    {suggestedTips.map((tip) => (
+                      <div key={tip.id} className="col-12">
+                        <div
+                          className="card border-0"
+                          style={{
+                            backgroundColor: "#f0fff8",
+                            borderRadius: "12px",
+                          }}
+                        >
+                          <div className="card-body py-2">
+                            <span className="badge bg-success mb-1">
+                              {ACTIVITY_TYPES.find(
+                                (a) => a.value === tip.category,
+                              )?.label || tip.category}
+                            </span>
+                            <p className="fw-bold mb-1 small">{tip.title}</p>
+                            <p className="text-muted mb-1 small">
+                              {tip.description}
+                            </p>
+                            <small className="text-success">
+                              🌿 Risparmio stimato: {tip.co2SavedEstimate} kg
+                              CO₂
+                            </small>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Colonna destra — grafico */}
+          <div className="col-lg-7">
+            <div
+              className="card shadow-sm mb-4 border-0"
+              style={{ borderRadius: "16px" }}
+            >
+              <div className="card-body" style={{ minHeight: "600px" }}>
+                <h6 className="fw-bold mb-3">
+                  📈 Storico CO₂ (ultimi 7 giorni)
+                </h6>
+                {logs.length === 0 ? (
+                  <p className="text-muted text-center py-3">
+                    Nessun dato disponibile ancora.
+                  </p>
+                ) : (
+                  <Line data={chartData} options={chartOptions} />
+                )}
+              </div>
             </div>
           </div>
         </div>
