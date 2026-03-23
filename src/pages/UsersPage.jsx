@@ -76,110 +76,139 @@ function UsersPage() {
   }
 
   return (
-    <div className="container mt-4">
-      <h4 className="fw-bold text-success mb-4">Gestione Utenti</h4>
+    <div
+      style={{ minHeight: "100vh", paddingTop: "2rem", paddingBottom: "3rem" }}
+    >
+      <div className="container">
+        <h4 className="fw-bold text-success mb-4">👥 Gestione Utenti</h4>
 
-      <div className="card shadow-sm">
-        <div className="card-body">
-          {users.length === 0 ? (
-            <p className="text-muted text-center py-3">
-              Nessun utente registrato.
-            </p>
-          ) : (
-            <table className="table table-hover align-middle">
-              <thead className="table-success">
-                <tr>
-                  <th>Nome</th>
-                  <th>Email</th>
-                  <th>Ruolo</th>
-                  <th>Registrato il</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <>
-                    <tr key={user.id}>
-                      <td>
-                        {/* Avatar con iniziale */}
-                        <span
-                          className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center me-2"
-                          style={{
-                            width: "32px",
-                            height: "32px",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          {user.name.charAt(0).toUpperCase()}
-                        </span>
-                        {user.name}
-                      </td>
-                      <td>{user.email}</td>
-                      <td>
-                        <span
-                          className={`badge ${user.role === "ADMIN" ? "bg-danger" : "bg-success"}`}
-                        >
-                          {user.role}
-                        </span>
-                      </td>
-                      <td>
-                        {new Date(user.createdAt).toLocaleDateString("it-IT")}
-                      </td>
-                      <td>
-                        <div className="d-flex gap-2">
-                          <button
-                            className={`btn btn-sm ${user.role === "ADMIN" ? "btn-outline-warning" : "btn-outline-success"}`}
-                            onClick={() => handleChangeRole(user.id, user.role)}
-                          >
-                            {user.role === "ADMIN"
-                              ? "⬇️ Retrocedi"
-                              : "⬆️ Promuovi"}
-                          </button>
-                          <button
-                            className="btn btn-outline-danger btn-sm"
-                            onClick={() => setDeleteConfirmId(user.id)}
-                          >
-                            🗑️ Elimina
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-
-                    {/* Riga di conferma eliminazione — appare sotto l'utente selezionato */}
-                    {deleteConfirmId === user.id && (
-                      <tr key={`confirm-${user.id}`} className="table-danger">
-                        <td colSpan={5}>
-                          <div className="d-flex align-items-center justify-content-between">
-                            <span className="text-danger fw-bold">
-                              ⚠️ Sei sicuro di voler eliminare{" "}
-                              <strong>{user.name}</strong>?
+        <div
+          className="card shadow-sm border-0"
+          style={{ borderRadius: "16px" }}
+        >
+          <div className="card-body p-0">
+            {users.length === 0 ? (
+              <div className="text-center py-5">
+                <div style={{ fontSize: "3rem" }}>👥</div>
+                <p className="text-muted mt-2">Nessun utente registrato.</p>
+              </div>
+            ) : (
+              <table className="table table-hover align-middle mb-0">
+                <thead style={{ backgroundColor: "#d4edda" }}>
+                  <tr>
+                    <th className="ps-4 py-3">Nome</th>
+                    <th className="py-3">Email</th>
+                    <th className="py-3">Ruolo</th>
+                    <th className="py-3">Registrato il</th>
+                    <th className="py-3"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <>
+                      <tr key={user.id}>
+                        <td className="ps-4">
+                          {user.avatarUrl ? (
+                            <img
+                              src={user.avatarUrl}
+                              alt="avatar"
+                              className="rounded-circle me-2"
+                              style={{
+                                width: "36px",
+                                height: "36px",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <span
+                              className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center me-2"
+                              style={{
+                                width: "36px",
+                                height: "36px",
+                                fontSize: "0.9rem",
+                              }}
+                            >
+                              {user.name.charAt(0).toUpperCase()}
                             </span>
-                            <div className="d-flex gap-2">
-                              <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleDelete(user.id)}
-                                disabled={deleteLoading}
-                              >
-                                {deleteLoading
-                                  ? "Eliminazione..."
-                                  : "Sì, elimina"}
-                              </button>
-                              <button
-                                className="btn btn-outline-secondary btn-sm"
-                                onClick={() => setDeleteConfirmId(null)}
-                              >
-                                Annulla
-                              </button>
-                            </div>
+                          )}
+                          <span className="fw-bold">{user.name}</span>
+                        </td>
+                        <td className="text-muted">{user.email}</td>
+                        <td>
+                          <span
+                            className={`badge ${user.role === "ADMIN" ? "bg-danger" : "bg-success"}`}
+                            style={{ borderRadius: "8px" }}
+                          >
+                            {user.role}
+                          </span>
+                        </td>
+                        <td className="text-muted">
+                          {new Date(user.createdAt).toLocaleDateString("it-IT")}
+                        </td>
+                        <td>
+                          <div className="d-flex gap-2">
+                            <button
+                              className={`btn btn-sm ${user.role === "ADMIN" ? "btn-outline-warning" : "btn-outline-success"}`}
+                              style={{ borderRadius: "8px" }}
+                              onClick={() =>
+                                handleChangeRole(user.id, user.role)
+                              }
+                            >
+                              {user.role === "ADMIN"
+                                ? "⬇️ Retrocedi"
+                                : "⬆️ Promuovi"}
+                            </button>
+                            <button
+                              className="btn btn-outline-danger btn-sm"
+                              style={{ borderRadius: "8px" }}
+                              onClick={() => setDeleteConfirmId(user.id)}
+                            >
+                              🗑️ Elimina
+                            </button>
                           </div>
                         </td>
                       </tr>
-                    )}
-                  </>
-                ))}
-              </tbody>
-            </table>
-          )}
+
+                      {deleteConfirmId === user.id && (
+                        <tr key={`confirm-${user.id}`}>
+                          <td
+                            colSpan={5}
+                            style={{ backgroundColor: "#fde8e8" }}
+                          >
+                            <div className="d-flex align-items-center justify-content-between px-2">
+                              <span className="text-danger fw-bold">
+                                ⚠️ Sei sicuro di voler eliminare{" "}
+                                <strong>{user.name}</strong>?
+                              </span>
+                              <div className="d-flex gap-2">
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  style={{ borderRadius: "8px" }}
+                                  onClick={() => handleDelete(user.id)}
+                                  disabled={deleteLoading}
+                                >
+                                  {deleteLoading
+                                    ? "Eliminazione..."
+                                    : "Sì, elimina"}
+                                </button>
+                                <button
+                                  className="btn btn-outline-secondary btn-sm"
+                                  style={{ borderRadius: "8px" }}
+                                  onClick={() => setDeleteConfirmId(null)}
+                                >
+                                  Annulla
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
     </div>

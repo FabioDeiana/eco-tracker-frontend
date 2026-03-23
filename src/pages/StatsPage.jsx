@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { Bar } from "react-chartjs-2"
+import { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,16 +8,23 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js"
-import apiFetch from "../api/apiFetch"
+} from "chart.js";
+import apiFetch from "../api/apiFetch";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 function StatsPage() {
-  const [users, setUsers] = useState([])
-  const [logs, setLogs] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [users, setUsers] = useState([]);
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,49 +32,52 @@ function StatsPage() {
         const [usersData, logsData] = await Promise.all([
           apiFetch("/users"),
           apiFetch("/logs/all"),
-        ])
-        setUsers(usersData.content)
-        setLogs(logsData)
+        ]);
+        setUsers(usersData.content);
+        setLogs(logsData);
       } catch (err) {
-        setError("Errore nel caricamento delle statistiche")
+        setError("Errore nel caricamento delle statistiche");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   // --- Calcolo statistiche ---
 
   // CO₂ totale emessa da tutti gli utenti
-  const co2Totale = logs.reduce((sum, log) => sum + log.totalCo2, 0)
+  const co2Totale = logs.reduce((sum, log) => sum + log.totalCo2, 0);
 
   // Media CO₂ per log
-  const co2Media = logs.length > 0 ? co2Totale / logs.length : 0
+  const co2Media = logs.length > 0 ? co2Totale / logs.length : 0;
 
   // Numero utenti USER (escludiamo gli ADMIN)
-  const totaleUser = users.filter((u) => u.role === "USER").length
+  const totaleUser = users.filter((u) => u.role === "USER").length;
 
   // CO₂ per utente — sommiamo i log per ogni utente
-  const co2PerUtente = users.map((user) => {
-    const userLogs = logs.filter((log) => log.user.id === user.id)
-    const totalCo2 = userLogs.reduce((sum, log) => sum + log.totalCo2, 0)
-    return { name: user.name, email: user.email, totalCo2, role: user.role }
-  }).filter((u) => u.role === "USER") // mostriamo solo gli USER
+  const co2PerUtente = users
+    .map((user) => {
+      const userLogs = logs.filter((log) => log.user.id === user.id);
+      const totalCo2 = userLogs.reduce((sum, log) => sum + log.totalCo2, 0);
+      return { name: user.name, email: user.email, totalCo2, role: user.role };
+    })
+    .filter((u) => u.role === "USER"); // mostriamo solo gli USER
 
   // Utente più virtuoso — meno CO₂ con almeno un log
-  const utentiConLog = co2PerUtente.filter((u) => u.totalCo2 > 0)
-  const piuVirtuoso = utentiConLog.length > 0
-    ? utentiConLog.reduce((min, u) => u.totalCo2 < min.totalCo2 ? u : min)
-    : null
+  const utentiConLog = co2PerUtente.filter((u) => u.totalCo2 > 0);
+  const piuVirtuoso =
+    utentiConLog.length > 0
+      ? utentiConLog.reduce((min, u) => (u.totalCo2 < min.totalCo2 ? u : min))
+      : null;
 
   // CO₂ per data — sommiamo tutti i log per giorno
   const co2PerData = logs.reduce((acc, log) => {
-    acc[log.date] = (acc[log.date] || 0) + log.totalCo2
-    return acc
-  }, {})
+    acc[log.date] = (acc[log.date] || 0) + log.totalCo2;
+    return acc;
+  }, {});
 
-  const dateOrdinate = Object.keys(co2PerData).sort()
+  const dateOrdinate = Object.keys(co2PerData).sort();
 
   const chartData = {
     labels: dateOrdinate,
@@ -80,7 +90,7 @@ function StatsPage() {
         borderWidth: 1,
       },
     ],
-  }
+  };
 
   const chartOptions = {
     responsive: true,
@@ -93,7 +103,7 @@ function StatsPage() {
         title: { display: true, text: "kg CO₂" },
       },
     },
-  }
+  };
 
   if (loading) {
     return (
@@ -101,7 +111,7 @@ function StatsPage() {
         <div className="spinner-border text-success" role="status" />
         <p className="mt-2 text-muted">Caricamento...</p>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -109,134 +119,196 @@ function StatsPage() {
       <div className="container mt-5">
         <div className="alert alert-danger">{error}</div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="container mt-4">
-      <h4 className="fw-bold text-success mb-4">📊 Statistiche Globali</h4>
+    <div
+      style={{ minHeight: "100vh", paddingTop: "2rem", paddingBottom: "3rem" }}
+    >
+      <div className="container">
+        <h4 className="fw-bold text-success mb-4">📊 Statistiche Globali</h4>
 
-      {/* Cards statistiche */}
-      <div className="row g-3 mb-4">
-
-        <div className="col-md-3">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">Utenti registrati</p>
-              <h2 className="fw-bold text-success">{totaleUser}</h2>
-              <p className="text-muted small">utenti attivi</p>
+        {/* Cards statistiche */}
+        <div className="row g-3 mb-4">
+          <div className="col-md-3">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #d4edda, #f0fff4)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>👥</div>
+                <p className="text-muted mb-1 mt-2">Utenti registrati</p>
+                <h2 className="fw-bold text-success">{totaleUser}</h2>
+                <p className="text-muted small">utenti attivi</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #dbeafe, #f0f7ff)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>📅</div>
+                <p className="text-muted mb-1 mt-2">Log totali</p>
+                <h2 className="fw-bold" style={{ color: "#2563eb" }}>
+                  {logs.length}
+                </h2>
+                <p className="text-muted small">giorni tracciati</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #fde8e8, #fff5f5)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>🏭</div>
+                <p className="text-muted mb-1 mt-2">CO₂ totale</p>
+                <h2 className="fw-bold text-danger">{co2Totale.toFixed(2)}</h2>
+                <p className="text-muted small">kg emessi</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div
+              className="card shadow-sm h-100 border-0"
+              style={{
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #fef9c3, #fffde7)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <div style={{ fontSize: "2rem" }}>📊</div>
+                <p className="text-muted mb-1 mt-2">Media per log</p>
+                <h2 className="fw-bold" style={{ color: "#ca8a04" }}>
+                  {co2Media.toFixed(2)}
+                </h2>
+                <p className="text-muted small">kg CO₂ / giorno</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="col-md-3">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">Log totali</p>
-              <h2 className="fw-bold text-success">{logs.length}</h2>
-              <p className="text-muted small">giorni tracciati</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">CO₂ totale</p>
-              <h2 className="fw-bold text-success">{co2Totale.toFixed(2)}</h2>
-              <p className="text-muted small">kg emessi</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-3">
-          <div className="card shadow-sm h-100">
-            <div className="card-body text-center">
-              <p className="text-muted mb-1">Media per log</p>
-              <h2 className="fw-bold text-success">{co2Media.toFixed(2)}</h2>
-              <p className="text-muted small">kg CO₂ / giorno</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div className="row g-4">
-
-        {/* Grafico CO₂ per data */}
-        <div className="col-lg-8">
-          <div className="card shadow-sm mb-4">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">CO₂ emessa per giorno (tutti gli utenti)</h6>
-              {logs.length === 0 ? (
-                <p className="text-muted text-center py-3">Nessun dato disponibile.</p>
-              ) : (
-                <Bar data={chartData} options={chartOptions} />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Colonna destra */}
-        <div className="col-lg-4">
-
-          {/* Utente più virtuoso */}
-          <div className="card shadow-sm mb-4">
-            <div className="card-body text-center">
-              <h6 className="fw-bold mb-3">🌿 Utente più virtuoso</h6>
-              {piuVirtuoso ? (
-                <>
-                  <div
-                    className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-2"
-                    style={{ width: "60px", height: "60px", fontSize: "1.5rem" }}
-                  >
-                    {piuVirtuoso.name.charAt(0).toUpperCase()}
+        <div className="row g-4">
+          {/* Grafico CO₂ per data */}
+          <div className="col-lg-8">
+            <div
+              className="card shadow-sm border-0 mb-4"
+              style={{ borderRadius: "16px" }}
+            >
+              <div className="card-body">
+                <h6 className="fw-bold mb-3">
+                  📈 CO₂ emessa per giorno (tutti gli utenti)
+                </h6>
+                {logs.length === 0 ? (
+                  <p className="text-muted text-center py-3">
+                    Nessun dato disponibile.
+                  </p>
+                ) : (
+                  <div style={{ height: "350px" }}>
+                    <Bar
+                      data={chartData}
+                      options={{ ...chartOptions, maintainAspectRatio: false }}
+                    />
                   </div>
-                  <p className="fw-bold mb-0">{piuVirtuoso.name}</p>
-                  <p className="text-muted small">{piuVirtuoso.email}</p>
-                  <span className="badge bg-success">
-                    {piuVirtuoso.totalCo2.toFixed(2)} kg CO₂
-                  </span>
-                </>
-              ) : (
-                <p className="text-muted">Nessun dato disponibile.</p>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
-          {/* CO₂ per utente */}
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">CO₂ per utente</h6>
-              {co2PerUtente.length === 0 ? (
-                <p className="text-muted text-center">Nessun dato.</p>
-              ) : (
-                <ul className="list-group list-group-flush">
-                  {co2PerUtente
-                    .filter((u) => u.totalCo2 > 0)
-                    .sort((a, b) => a.totalCo2 - b.totalCo2) // dal più virtuoso al meno
-                    .map((u, index) => (
-                      <li key={u.email} className="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <div className="d-flex align-items-center gap-2">
-                          {/* Medaglia per i primi 3 */}
-                          <span>{index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "  "}</span>
-                          <span className="small">{u.name}</span>
-                        </div>
-                        <span className="badge bg-success rounded-pill">
-                          {u.totalCo2.toFixed(2)} kg
-                        </span>
-                      </li>
-                    ))}
-                </ul>
-              )}
+          {/* Colonna destra */}
+          <div className="col-lg-4">
+            {/* Utente più virtuoso */}
+            <div
+              className="card shadow-sm border-0 mb-4"
+              style={{
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #d4edda, #f0fff4)",
+              }}
+            >
+              <div className="card-body text-center py-4">
+                <h6 className="fw-bold mb-3">🌿 Utente più virtuoso</h6>
+                {piuVirtuoso ? (
+                  <>
+                    <div
+                      className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-2"
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        fontSize: "1.5rem",
+                      }}
+                    >
+                      {piuVirtuoso.name.charAt(0).toUpperCase()}
+                    </div>
+                    <p className="fw-bold mb-0">{piuVirtuoso.name}</p>
+                    <p className="text-muted small">{piuVirtuoso.email}</p>
+                    <span className="badge bg-success">
+                      {piuVirtuoso.totalCo2.toFixed(2)} kg CO₂
+                    </span>
+                  </>
+                ) : (
+                  <p className="text-muted">Nessun dato disponibile.</p>
+                )}
+              </div>
+            </div>
+
+            {/* CO₂ per utente */}
+            <div
+              className="card shadow-sm border-0"
+              style={{ borderRadius: "16px" }}
+            >
+              <div className="card-body">
+                <h6 className="fw-bold mb-3">🏆 Classifica utenti</h6>
+                {co2PerUtente.filter((u) => u.totalCo2 > 0).length === 0 ? (
+                  <p className="text-muted text-center">Nessun dato.</p>
+                ) : (
+                  <ul className="list-group list-group-flush">
+                    {co2PerUtente
+                      .filter((u) => u.totalCo2 > 0)
+                      .sort((a, b) => a.totalCo2 - b.totalCo2)
+                      .map((u, index) => (
+                        <li
+                          key={u.email}
+                          className="list-group-item d-flex justify-content-between align-items-center px-0"
+                        >
+                          <div className="d-flex align-items-center gap-2">
+                            <span>
+                              {index === 0
+                                ? "🥇"
+                                : index === 1
+                                  ? "🥈"
+                                  : index === 2
+                                    ? "🥉"
+                                    : "  "}
+                            </span>
+                            <span className="small">{u.name}</span>
+                          </div>
+                          <span className="badge bg-success rounded-pill">
+                            {u.totalCo2.toFixed(2)} kg
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
-  )
+  );
 }
 
-export default StatsPage
+export default StatsPage;
