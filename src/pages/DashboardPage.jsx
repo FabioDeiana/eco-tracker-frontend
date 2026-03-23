@@ -205,6 +205,7 @@ function DashboardPage() {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: "top" },
     },
@@ -490,7 +491,9 @@ function DashboardPage() {
                     Nessun dato disponibile ancora.
                   </p>
                 ) : (
-                  <Line data={chartData} options={chartOptions} />
+                  <div style={{ height: "400px" }}>
+                    <Line data={chartData} options={chartOptions} />
+                  </div>
                 )}
               </div>
             </div>

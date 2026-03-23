@@ -1,45 +1,62 @@
-import { useState, useEffect } from "react"
-import apiFetch from "../api/apiFetch"
+import { useState, useEffect } from "react";
+import apiFetch from "../api/apiFetch";
 
 function UsersPage() {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // ID dell'utente di cui stiamo chiedendo conferma eliminazione
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
-  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Carichiamo tutti gli utenti
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         // GET /users ritorna una Page — i dati sono nel campo "content"
-        const data = await apiFetch("/users")
-        setUsers(data.content)
+        const data = await apiFetch("/users");
+        setUsers(data.content);
       } catch (err) {
-        setError("Errore nel caricamento degli utenti")
+        setError("Errore nel caricamento degli utenti");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchUsers()
-  }, [])
+    };
+    fetchUsers();
+  }, []);
 
   // Elimina un utente
   const handleDelete = async (userId) => {
-    setDeleteLoading(true)
+    setDeleteLoading(true);
     try {
-      await apiFetch(`/users/${userId}`, { method: "DELETE" })
+      await apiFetch(`/users/${userId}`, { method: "DELETE" });
       // Rimuoviamo l'utente dalla lista locale
-      setUsers(users.filter((u) => u.id !== userId))
-      setDeleteConfirmId(null)
+      setUsers(users.filter((u) => u.id !== userId));
+      setDeleteConfirmId(null);
     } catch (err) {
-      setError("Errore durante l'eliminazione dell'utente")
+      setError("Errore durante l'eliminazione dell'utente");
     } finally {
-      setDeleteLoading(false)
+      setDeleteLoading(false);
     }
-  }
+  };
+
+  // Cambia il ruolo di un utente
+  const handleChangeRole = async (userId, ruoloAttuale) => {
+    const nuovoRuolo = ruoloAttuale === "ADMIN" ? "USER" : "ADMIN";
+    try {
+      const updated = await apiFetch(`/users/${userId}/role`, {
+        method: "PATCH",
+        body: JSON.stringify({ role: nuovoRuolo }),
+      });
+      // Aggiorniamo il ruolo nella lista locale
+      setUsers(
+        users.map((u) => (u.id === userId ? { ...u, role: updated.role } : u)),
+      );
+    } catch (err) {
+      setError("Errore durante il cambio ruolo");
+    }
+  };
 
   if (loading) {
     return (
@@ -47,7 +64,7 @@ function UsersPage() {
         <div className="spinner-border text-success" role="status" />
         <p className="mt-2 text-muted">Caricamento...</p>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -55,7 +72,7 @@ function UsersPage() {
       <div className="container mt-5">
         <div className="alert alert-danger">{error}</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -64,9 +81,10 @@ function UsersPage() {
 
       <div className="card shadow-sm">
         <div className="card-body">
-
           {users.length === 0 ? (
-            <p className="text-muted text-center py-3">Nessun utente registrato.</p>
+            <p className="text-muted text-center py-3">
+              Nessun utente registrato.
+            </p>
           ) : (
             <table className="table table-hover align-middle">
               <thead className="table-success">
@@ -86,7 +104,11 @@ function UsersPage() {
                         {/* Avatar con iniziale */}
                         <span
                           className="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center me-2"
-                          style={{ width: "32px", height: "32px", fontSize: "0.9rem" }}
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            fontSize: "0.9rem",
+                          }}
                         >
                           {user.name.charAt(0).toUpperCase()}
                         </span>
@@ -94,18 +116,32 @@ function UsersPage() {
                       </td>
                       <td>{user.email}</td>
                       <td>
-                        <span className={`badge ${user.role === "ADMIN" ? "bg-danger" : "bg-success"}`}>
+                        <span
+                          className={`badge ${user.role === "ADMIN" ? "bg-danger" : "bg-success"}`}
+                        >
                           {user.role}
                         </span>
                       </td>
-                      <td>{new Date(user.createdAt).toLocaleDateString("it-IT")}</td>
                       <td>
-                        <button
-                          className="btn btn-outline-danger btn-sm"
-                          onClick={() => setDeleteConfirmId(user.id)}
-                        >
-                          🗑️ Elimina
-                        </button>
+                        {new Date(user.createdAt).toLocaleDateString("it-IT")}
+                      </td>
+                      <td>
+                        <div className="d-flex gap-2">
+                          <button
+                            className={`btn btn-sm ${user.role === "ADMIN" ? "btn-outline-warning" : "btn-outline-success"}`}
+                            onClick={() => handleChangeRole(user.id, user.role)}
+                          >
+                            {user.role === "ADMIN"
+                              ? "⬇️ Retrocedi"
+                              : "⬆️ Promuovi"}
+                          </button>
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => setDeleteConfirmId(user.id)}
+                          >
+                            🗑️ Elimina
+                          </button>
+                        </div>
                       </td>
                     </tr>
 
@@ -115,7 +151,8 @@ function UsersPage() {
                         <td colSpan={5}>
                           <div className="d-flex align-items-center justify-content-between">
                             <span className="text-danger fw-bold">
-                              ⚠️ Sei sicuro di voler eliminare <strong>{user.name}</strong>?
+                              ⚠️ Sei sicuro di voler eliminare{" "}
+                              <strong>{user.name}</strong>?
                             </span>
                             <div className="d-flex gap-2">
                               <button
@@ -123,7 +160,9 @@ function UsersPage() {
                                 onClick={() => handleDelete(user.id)}
                                 disabled={deleteLoading}
                               >
-                                {deleteLoading ? "Eliminazione..." : "Sì, elimina"}
+                                {deleteLoading
+                                  ? "Eliminazione..."
+                                  : "Sì, elimina"}
                               </button>
                               <button
                                 className="btn btn-outline-secondary btn-sm"
@@ -141,11 +180,10 @@ function UsersPage() {
               </tbody>
             </table>
           )}
-
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default UsersPage
+export default UsersPage;

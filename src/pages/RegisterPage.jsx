@@ -17,11 +17,6 @@ function RegisterPage({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Log temporaneo per debug
-    console.log(
-      "URL chiamata:",
-      `${import.meta.env.VITE_API_URL}/auth/register`,
-    );
     setError("");
     setLoading(true);
 
@@ -64,20 +59,41 @@ function RegisterPage({ onLogin }) {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center min-vh-100">
+    <div
+      className="min-vh-100 d-flex justify-content-center align-items-center"
+      style={{
+        backgroundImage: "url('/forest.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Overlay scuro semi-trasparente */}
       <div
-        className="card shadow p-4"
-        style={{ width: "100%", maxWidth: "420px" }}
+        className="position-absolute top-0 start-0 w-100 h-100"
+        style={{ backgroundColor: "rgba(0, 40, 0, 0.50)" }}
+      />
+
+      {/* Card registrazione */}
+      <div
+        className="card shadow-lg p-4 position-relative"
+        style={{
+          width: "100%",
+          maxWidth: "420px",
+          zIndex: 1,
+          borderRadius: "16px",
+          backgroundColor: "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "blur(6px)"
+        }}
       >
         <div className="text-center mb-4">
-          <h2 className="fw-bold text-success">🌿 Eco-Tracker</h2>
+          <div style={{ fontSize: "2.5rem" }}>🌿</div>
+          <h2 className="fw-bold text-success">Eco-Tracker</h2>
           <p className="text-muted">Crea il tuo account</p>
         </div>
 
         {error && <div className="alert alert-danger py-2">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          {/* Un solo campo name — corrisponde esattamente al DTO del backend */}
           <div className="mb-3">
             <label className="form-label">Nome completo</label>
             <input
@@ -90,7 +106,6 @@ function RegisterPage({ onLogin }) {
               required
             />
           </div>
-
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
@@ -103,7 +118,6 @@ function RegisterPage({ onLogin }) {
               required
             />
           </div>
-
           <div className="mb-3">
             <label className="form-label">Password</label>
             <input
@@ -116,11 +130,11 @@ function RegisterPage({ onLogin }) {
               required
             />
           </div>
-
           <button
             type="submit"
             className="btn btn-success w-100 mt-2"
             disabled={loading}
+            style={{ borderRadius: "8px" }}
           >
             {loading ? "Registrazione in corso..." : "Registrati"}
           </button>
