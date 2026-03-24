@@ -99,7 +99,7 @@ function DashboardPage() {
       );
 
       // Uniamo tutti i tips in un unico array
-      const allTips = tipsArrays.flat();
+      const allTips = tipsArrays.map(tips => tips[0]).filter(Boolean);
       setSuggestedTips(allTips);
     } catch (err) {
       // Se fallisce non blocchiamo la dashboard — i tips sono opzionali
