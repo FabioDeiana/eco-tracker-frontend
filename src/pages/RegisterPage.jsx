@@ -1,62 +1,47 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 function RegisterPage({ onLogin }) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { t } = useTranslation()
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" })
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
     try {
-      // Step 1 — registriamo l'utente
-      const regRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        },
-      );
+      const regRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
       if (!regRes.ok) {
-        const regData = await regRes.json();
-        throw new Error(regData.message || "Errore durante la registrazione");
+        const regData = await regRes.json()
+        throw new Error(regData.message || t("register.error"))
       }
 
-      // Step 2 — login automatico con le stesse credenziali
-      const loginRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        },
-      );
-      const loginData = await loginRes.json();
-      if (!loginRes.ok)
-        throw new Error(loginData.message || "Errore nel login");
+      const loginRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      })
+      const loginData = await loginRes.json()
+      if (!loginRes.ok) throw new Error(loginData.message || t("register.error"))
 
-      // Step 3 — passiamo il token ad App.jsx
-      onLogin(loginData.token);
+      onLogin(loginData.token)
     } catch (err) {
-      setError(err.message || "Errore durante la registrazione");
+      setError(err.message || t("register.error"))
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div
@@ -67,13 +52,10 @@ function RegisterPage({ onLogin }) {
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay scuro semi-trasparente */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{ backgroundColor: "rgba(0, 40, 0, 0.50)" }}
       />
-
-      {/* Card registrazione */}
       <div
         className="card shadow-lg p-4 position-relative"
         style={{
@@ -82,20 +64,20 @@ function RegisterPage({ onLogin }) {
           zIndex: 1,
           borderRadius: "16px",
           backgroundColor: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(6px)"
+          backdropFilter: "blur(6px)",
         }}
       >
         <div className="text-center mb-4">
           <div style={{ fontSize: "2.5rem" }}>🌿</div>
-          <h2 className="fw-bold text-success">Eco-Tracker</h2>
-          <p className="text-muted">Crea il tuo account</p>
+          <h2 className="fw-bold text-success">{t("register.title")}</h2>
+          <p className="text-muted">{t("register.subtitle")}</p>
         </div>
 
         {error && <div className="alert alert-danger py-2">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Nome completo</label>
+            <label className="form-label">{t("register.name")}</label>
             <input
               type="text"
               name="name"
@@ -107,7 +89,7 @@ function RegisterPage({ onLogin }) {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label">{t("register.email")}</label>
             <input
               type="email"
               name="email"
@@ -119,7 +101,7 @@ function RegisterPage({ onLogin }) {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label">Password</label>
+            <label className="form-label">{t("register.password")}</label>
             <input
               type="password"
               name="password"
@@ -136,21 +118,21 @@ function RegisterPage({ onLogin }) {
             disabled={loading}
             style={{ borderRadius: "8px" }}
           >
-            {loading ? "Registrazione in corso..." : "Registrati"}
+            {loading ? t("register.loading") : t("register.submit")}
           </button>
         </form>
 
         <div className="text-center mt-3">
           <small className="text-muted">
-            Hai già un account?{" "}
+            {t("register.hasAccount")}{" "}
             <Link to="/login" className="text-success fw-bold">
-              Accedi
+              {t("register.login")}
             </Link>
           </small>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default RegisterPage;
+export default RegisterPage

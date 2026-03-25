@@ -1,43 +1,35 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
-// Riceviamo onLogin da App.jsx — la chiamiamo quando il login va a buon fine
 function LoginPage({ onLogin }) {
-  // Stato del form — un campo per email e uno per password
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const { t } = useTranslation()
+  const [formData, setFormData] = useState({ email: "", password: "" })
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  // Stato per mostrare eventuali errori (es. credenziali errate)
-  const [error, setError] = useState("");
-
-  // Stato per disabilitare il bottone durante la chiamata API
-  const [loading, setLoading] = useState(false);
-
-  // Aggiorna il campo giusto nel formData quando l'utente scrive
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // evitiamo il refresh della pagina
-    setError("");
-    setLoading(true);
-
+    e.preventDefault()
+    setError("")
+    setLoading(true)
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Credenziali non valide");
-      onLogin(data.token);
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || t("login.error"))
+      onLogin(data.token)
     } catch (err) {
-      setError(err.message || "Credenziali non valide");
+      setError(err.message || t("login.error"))
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div
@@ -46,16 +38,12 @@ function LoginPage({ onLogin }) {
         backgroundImage: "url('/forest.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        //opacity: 0.9,
       }}
     >
-      {/* Overlay scuro semi-trasparente */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{ backgroundColor: "rgba(0, 40, 0, 0.50)" }}
       />
-
-      {/* Card login — z-index per stare sopra l'overlay */}
       <div
         className="card shadow-lg p-4 position-relative"
         style={{
@@ -69,15 +57,13 @@ function LoginPage({ onLogin }) {
       >
         <div className="text-center mb-4">
           <div style={{ fontSize: "2.5rem" }}>🌿</div>
-          <h2 className="fw-bold text-success">Eco-Tracker</h2>
-          <p className="text-muted">Accedi al tuo account</p>
+          <h2 className="fw-bold text-success">{t("login.title")}</h2>
+          <p className="text-muted">{t("login.subtitle")}</p>
         </div>
-
         {error && <div className="alert alert-danger py-2">{error}</div>}
-
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label">{t("login.email")}</label>
             <input
               type="email"
               name="email"
@@ -89,7 +75,7 @@ function LoginPage({ onLogin }) {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label">Password</label>
+            <label className="form-label">{t("login.password")}</label>
             <input
               type="password"
               name="password"
@@ -106,21 +92,20 @@ function LoginPage({ onLogin }) {
             disabled={loading}
             style={{ borderRadius: "8px" }}
           >
-            {loading ? "Accesso in corso..." : "Accedi"}
+            {loading ? t("login.loading") : t("login.submit")}
           </button>
         </form>
-
         <div className="text-center mt-3">
           <small className="text-muted">
-            Non hai un account?{" "}
+            {t("login.noAccount")}{" "}
             <Link to="/register" className="text-success fw-bold">
-              Registrati
+              {t("login.register")}
             </Link>
           </small>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LoginPage;
+export default LoginPage
