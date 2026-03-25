@@ -12,10 +12,12 @@
   "dependencies": {
     "bootstrap": "^5.3.8",
     "chart.js": "^4.5.1",
+    "i18next": "^25.10.9",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.0",
+    "react-i18next": "^16.6.6",
     "react-router-dom": "^7.13.1"
   },
   "devDependencies": {
