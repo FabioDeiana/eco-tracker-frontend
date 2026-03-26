@@ -100,7 +100,8 @@
     "chartTitle": "📈 CO₂ emessa per giorno (tutti gli utenti)",
     "noData": "Nessun dato disponibile.",
     "bestUser": "🌿 Utente più virtuoso",
-    "ranking": "🏆 Classifica utenti"
+    "ranking": "🏆 Classifica utenti",
+    "loadError": "Errore nel caricamento delle statistiche"
   },
   "users": {
     "title": "👥 Gestione Utenti",
@@ -114,7 +115,11 @@
     "confirmDelete": "⚠️ Sei sicuro di voler eliminare",
     "confirmYes": "Sì, elimina",
     "deleting": "Eliminazione...",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "loadError": "Errore nel caricamento degli utenti",
+    "deleteError": "Errore durante l'eliminazione dell'utente",
+    "roleError": "Errore durante il cambio ruolo",
+    "noUsers": "Nessun utente registrato."
   },
   "tips": {
     "title": "🌿 Green Tips",
@@ -129,6 +134,10 @@
     "saving": "Salvataggio...",
     "allCategories": "🔍 Tutte le categorie",
     "noTips": "Nessun consiglio disponibile — aggiungine uno!",
-    "savingEstimate": "🌿 Risparmio stimato"
+    "savingEstimate": "🌿 Risparmio stimato",
+    "loadError": "Errore nel caricamento dei consigli",
+    "addSuccess": "Consiglio aggiunto!",
+    "addError": "Errore durante la creazione del consiglio",
+    "deleteError": "Errore durante l'eliminazione del consiglio"
   }
 }

@@ -100,7 +100,8 @@
     "chartTitle": "📈 CO₂ emitted per day (all users)",
     "noData": "No data available.",
     "bestUser": "🌿 Most virtuous user",
-    "ranking": "🏆 User ranking"
+    "ranking": "🏆 User ranking",
+    "loadError": "Error loading statistics"
   },
   "users": {
     "title": "👥 User Management",
@@ -114,7 +115,11 @@
     "confirmDelete": "⚠️ Are you sure you want to delete",
     "confirmYes": "Yes, delete",
     "deleting": "Deleting...",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "loadError": "Error loading users",
+    "deleteError": "Error deleting user",
+    "roleError": "Error changing role",
+    "noUsers": "No registered users."
   },
   "tips": {
     "title": "🌿 Green Tips",
@@ -129,6 +134,10 @@
     "saving": "Saving...",
     "allCategories": "🔍 All categories",
     "noTips": "No tips available — add one!",
-    "savingEstimate": "🌿 Estimated saving"
+    "savingEstimate": "🌿 Estimated saving",
+    "loadError": "Error loading tips",
+    "addSuccess": "Tip added!",
+    "addError": "Error creating tip",
+    "deleteError": "Error deleting tip"
   }
 }
