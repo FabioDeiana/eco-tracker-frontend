@@ -247,7 +247,7 @@ function DashboardPage() {
                       className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}
                     >
                       {isMeglio ? "" : "+"}
-                      {differenza.toFixed(2)}
+                      {differenza.toFixed(2)} kg
                     </h2>
                     <p className="small text-muted">
                       {isMeglio
