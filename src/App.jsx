@@ -52,7 +52,7 @@ function AppContent() {
 
       <Routes>
         {/* Rotte pubbliche */}
-        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route
           path="/register"

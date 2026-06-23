@@ -1,47 +1,61 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { useTranslation } from "react-i18next"
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function RegisterPage({ onLogin }) {
-  const { t } = useTranslation()
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" })
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      const regRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
+      const regRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
       if (!regRes.ok) {
-        const regData = await regRes.json()
-        throw new Error(regData.message || t("register.error"))
+        const regData = await regRes.json();
+        throw new Error(regData.message || t("register.error"));
       }
 
-      const loginRes = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email, password: formData.password }),
-      })
-      const loginData = await loginRes.json()
-      if (!loginRes.ok) throw new Error(loginData.message || t("register.error"))
+      const loginRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        },
+      );
+      const loginData = await loginRes.json();
+      if (!loginRes.ok)
+        throw new Error(loginData.message || t("register.error"));
 
-      onLogin(loginData.token)
+      onLogin(loginData.token);
     } catch (err) {
-      setError(err.message || t("register.error"))
-      setLoading(false)
+      setError(err.message || t("register.error"));
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -56,6 +70,13 @@ function RegisterPage({ onLogin }) {
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{ backgroundColor: "rgba(0, 40, 0, 0.50)" }}
       />
+      <Link
+        to="/"
+        className="position-absolute text-white text-decoration-none small"
+        style={{ top: "20px", left: "20px", zIndex: 2 }}
+      >
+        ← {t("login.backHome")}
+      </Link>
       <div
         className="card shadow-lg p-4 position-relative"
         style={{
@@ -132,7 +153,7 @@ function RegisterPage({ onLogin }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default RegisterPage
+export default RegisterPage;

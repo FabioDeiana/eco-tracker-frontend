@@ -1,35 +1,35 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { useTranslation } from "react-i18next"
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function LoginPage({ onLogin }) {
-  const { t } = useTranslation()
-  const [formData, setFormData] = useState({ email: "", password: "" })
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.message || t("login.error"))
-      onLogin(data.token)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || t("login.error"));
+      onLogin(data.token);
     } catch (err) {
-      setError(err.message || t("login.error"))
-      setLoading(false)
+      setError(err.message || t("login.error"));
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -44,6 +44,13 @@ function LoginPage({ onLogin }) {
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{ backgroundColor: "rgba(0, 40, 0, 0.50)" }}
       />
+      <Link
+        to="/"
+        className="position-absolute text-white text-decoration-none small"
+        style={{ top: "20px", left: "20px", zIndex: 2 }}
+      >
+        ← {t("login.backHome")}
+      </Link>
       <div
         className="card shadow-lg p-4 position-relative"
         style={{
@@ -105,7 +112,7 @@ function LoginPage({ onLogin }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default LoginPage
+export default LoginPage;

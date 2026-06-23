@@ -16,7 +16,7 @@ function Navbar({ onLogout, isAdmin }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-success">
       <div className="container">
-        <Link className="navbar-brand fw-bold" to="/dashboard">
+        <Link className="navbar-brand fw-bold" to="/">
           🌿 Eco-Tracker
         </Link>
         <button
