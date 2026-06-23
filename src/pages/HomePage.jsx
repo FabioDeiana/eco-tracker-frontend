@@ -26,7 +26,7 @@ function HomePage() {
       {/* Navbar */}
       <nav className="navbar navbar-dark bg-success">
         <div className="container d-flex justify-content-between align-items-center">
-          <span className="navbar-brand fw-bold mb-0">🌿 Eco-Tracker</span>
+          <a href="/" className="navbar-brand fw-bold mb-0 text-white text-decoration-none">🌿 Eco-Tracker</a>
           <div className="d-flex align-items-center gap-3">
             <button
               onClick={toggleLanguage}

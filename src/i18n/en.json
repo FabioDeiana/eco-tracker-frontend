@@ -44,7 +44,7 @@
   "callout4Title": "Full history",
   "callout4Text": "Track every day and see your progress over time.",
   "strengthsTitle": "Why choose Eco-Tracker?",
-  "strengthsSubtitle": "Simple, free and based on scientific data.",
+  "strengthsSubtitle": "Simple, free & based on scientific data.",
   "strength1Title": "100% free",
   "strength1Text": "Sign up and use the app completely free, with no limits.",
   "strength2Title": "5 categories",
@@ -108,7 +108,7 @@
   },
   "activities": {
   "car": "Car",
-  "meat": "Meat",
+  "meat": "Food",
   "electricity": "Electricity",
   "flight": "Flight",
   "heating": "Heating"

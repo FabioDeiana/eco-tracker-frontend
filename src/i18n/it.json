@@ -12,7 +12,7 @@
     "register": "Registrati",
     "heroTitle": "Eco-Tracker & Green Planner",
     "heroSubtitle": "Monitora la tua impronta di carbonio quotidiana, scopri consigli personalizzati e migliora le tue abitudini per un pianeta più verde.",
-    "ctaRegister": "Inizia gratis",
+    "ctaRegister": "Registrati gratuitamente",
     "ctaLogin": "Accedi",
     "featuresTitle": "Cosa puoi fare con Eco-Tracker",
     "feature1Title": "Monitora le tue attività",
@@ -109,7 +109,7 @@
   },
   "activities": {
   "car": "Auto",
-  "meat": "Carne",
+  "meat": "Cibo",
   "electricity": "Elettricità",
   "flight": "Volo",
   "heating": "Riscaldamento"
