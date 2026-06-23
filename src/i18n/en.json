@@ -32,7 +32,30 @@
   "step3Text": "Monitor your emissions and improve every day.",
   "finalCtaTitle": "Ready to reduce your carbon footprint?",
   "categoriesTitle": "What can you track?",
-  "categoriesSubtitle": "Every daily action has an impact: discover how to measure it."
+  "categoriesSubtitle": "Every daily action has an impact: discover how to measure it.",
+  "previewTitle": "Your personal dashboard",
+  "previewSubtitle": "Everything you need to monitor your impact in one place.",
+  "callout1Title": "CO₂ history chart",
+  "callout1Text": "Visualize your emission trends over the last 7 days with an interactive chart.",
+  "callout2Title": "Global average comparison",
+  "callout2Text": "See if you're above or below the average of other users registered today.",
+  "callout3Title": "Personalized tips",
+  "callout3Text": "Get tailored suggestions based on the activities you've logged.",
+  "callout4Title": "Full history",
+  "callout4Text": "Track every day and see your progress over time.",
+  "strengthsTitle": "Why choose Eco-Tracker?",
+  "strengthsSubtitle": "Simple, free and based on scientific data.",
+  "strength1Title": "100% free",
+  "strength1Text": "Sign up and use the app completely free, with no limits.",
+  "strength2Title": "5 categories",
+  "strength2Text": "Car, meat, electricity, flights and heating — the main sources of daily emissions.",
+  "strength3Title": "Scientific data",
+  "strength3Text": "Calculations are based on the Climatiq API, powered by up-to-date scientific data.",
+  "strength4Title": "2 languages",
+  "strength4Text": "Available in Italian and English, with instant language switching.",
+  "tipsPreviewTitle": "Some tips to get started",
+  "tipsPreviewSubtitle": "Small daily actions that make a difference.",
+  "tipsPreviewCta": "Sign up to get personalized tips"
 },
 "footer": {
   "tagline": "Track your carbon footprint and contribute to a more sustainable future.",
@@ -57,7 +80,8 @@
   "q5": "How are CO₂ emissions calculated?",
   "a5": "We use up-to-date scientific data to estimate emissions based on the type and amount of activity logged.",
   "q6": "Can I delete my account?",
-  "a6": "Yes, you can delete your account anytime from the Profile page."
+  "a6": "Yes, you can delete your account anytime from the Profile page.",
+  "tooltip": "Any questions? 👋"
 },
   "login": {
     "title": "Eco-Tracker",

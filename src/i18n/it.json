@@ -32,7 +32,31 @@
     "step3Text": "Segui le tue emissioni e migliora ogni giorno.",
     "finalCtaTitle": "Pronto a ridurre la tua impronta di carbonio?",
     "categoriesTitle": "Quali attività puoi monitorare?",
-    "categoriesSubtitle": "Ogni gesto quotidiano ha un impatto: scopri come misurarlo."
+    "categoriesSubtitle": "Ogni gesto quotidiano ha un impatto: scopri come misurarlo.",
+    "previewTitle": "La tua dashboard personale",
+    "previewSubtitle": "Tutto quello che ti serve per monitorare il tuo impatto in un unico posto.",
+    "callout1Title": "Grafico storico CO₂",
+    "callout1Text": "Visualizza l'andamento delle tue emissioni negli ultimi 7 giorni con un grafico interattivo.",
+    "callout2Title": "Confronto con la media globale",
+    "callout2Text": "Scopri se sei sopra o sotto la media degli altri utenti registrati oggi.",
+    "callout3Title": "Consigli personalizzati",
+    "callout3Text": "Ricevi suggerimenti su misura in base alle attività che hai registrato.",
+    "callout4Title": "Storico completo",
+    "callout4Text": "Tieni traccia di ogni giornata e vedi i tuoi progressi nel tempo.",
+    "strengthsTitle": "Perché scegliere Eco-Tracker?",
+    "strengthsSubtitle": "Semplice, gratuito e basato su dati scientifici.",
+    "strength1Title": "100% gratuito",
+    "strength1Text": "Registrazione e utilizzo completamente gratuiti, senza limiti.",
+    "strength2Title": "5 categorie",
+    "strength2Text": "Auto, carne, elettricità, voli e riscaldamento — le principali fonti di emissioni quotidiane.",
+    "strength3Title": "Dati scientifici",
+    "strength3Text": "I calcoli si basano sull'API Climatiq, alimentata da dati scientifici aggiornati.",
+    "strength4Title": "2 lingue",
+    "strength4Text": "Disponibile in italiano e inglese, con cambio lingua istantaneo.",
+    "tipsPreviewTitle": "Qualche consiglio per iniziare",
+    "tipsPreviewSubtitle": "Piccoli gesti quotidiani che fanno la differenza.",
+    "tipsPreviewCta": "Registrati per ricevere consigli personalizzati"
+    
 },
   "footer": {
     "tagline": "Monitora la tua impronta di carbonio e contribuisci a un futuro più sostenibile.",
@@ -57,7 +81,8 @@
     "q5": "Come vengono calcolate le emissioni di CO₂?",
     "a5": "Usiamo dati scientifici aggiornati per stimare le emissioni in base al tipo e alla quantità di attività registrata.",
     "q6": "Posso eliminare il mio account?",
-    "a6": "Sì, in qualsiasi momento puoi eliminare il tuo account dalla pagina del Profilo."
+    "a6": "Sì, in qualsiasi momento puoi eliminare il tuo account dalla pagina del Profilo.",
+    "tooltip": "Hai domande? 👋"
 },
   "login": {
     "title": "Eco-Tracker",
