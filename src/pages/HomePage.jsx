@@ -523,54 +523,157 @@ function HomePage() {
             >
               {t("home.howSubtitle")}
             </p>
-            <div className="row g-4 text-center">
+            <div className="row g-4">
               {[
                 {
                   num: "01",
                   title: t("home.step1Title"),
                   text: t("home.step1Text"),
                   icon: "👤",
+                  img: "/signup.jpg",
                 },
                 {
                   num: "02",
                   title: t("home.step2Title"),
                   text: t("home.step2Text"),
                   icon: "📝",
+                  img: "/activity.jpg",
                 },
                 {
                   num: "03",
                   title: t("home.step3Title"),
                   text: t("home.step3Text"),
                   icon: "📈",
+                  img: "/progress.jpg",
                 },
-              ].map((step, i) => (
+              ].map((step) => (
                 <div key={step.num} className="col-md-4">
+                  <div
+                    style={{
+                      borderRadius: "20px",
+                      overflow: "hidden",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      height: "100%",
+                      transition: "transform 0.3s ease",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.transform = "translateY(-6px)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.transform = "translateY(0)")
+                    }
+                  >
+                    <div
+                      style={{
+                        height: "180px",
+                        backgroundImage: `url('${step.img}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        position: "relative",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          backgroundColor: "rgba(0,30,0,0.45)",
+                        }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "16px",
+                          left: "16px",
+                          fontSize: "3rem",
+                          fontWeight: "800",
+                          color: "rgba(255,255,255,0.3)",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {step.num}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        backgroundColor: "rgba(255,255,255,0.05)",
+                        padding: "24px 28px",
+                      }}
+                    >
+                      <div style={{ fontSize: "1.8rem", marginBottom: "10px" }}>
+                        {step.icon}
+                      </div>
+                      <h5 className="fw-bold text-white mb-2">{step.title}</h5>
+                      <p className="mb-0 small" style={{ color: "#a8d5ba" }}>
+                        {step.text}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeSection>
+      </div>
+
+      {/* Curiosità */}
+      <div style={{ backgroundColor: "#1b4332", paddingBottom: "0" }}>
+        <WaveDivider fromColor="#1b4332" toColor="#0d2b1e" />
+      </div>
+      <div style={{ backgroundColor: "#0d2b1e", paddingBottom: "80px" }}>
+        <FadeSection>
+          <div className="container" style={{ paddingTop: "60px" }}>
+            <h2
+              className="text-center fw-bold mb-2 text-white"
+              style={{ fontSize: "2.2rem" }}
+            >
+              {t("home.didYouKnowTitle")}
+            </h2>
+            <p
+              className="text-center mb-5"
+              style={{ color: "#a8d5ba", fontSize: "1.1rem" }}
+            >
+              {t("home.didYouKnowSubtitle")}
+            </p>
+            <div className="row g-4">
+              {[
+                { icon: "✈️", fact: t("home.fact1") },
+                { icon: "🥩", fact: t("home.fact2") },
+                { icon: "🚗", fact: t("home.fact3") },
+              ].map((item, i) => (
+                <div key={i} className="col-md-4">
                   <div
                     style={{
                       backgroundColor: "rgba(255,255,255,0.05)",
                       borderRadius: "20px",
-                      padding: "40px 30px",
-                      border: "1px solid rgba(255,255,255,0.1)",
+                      padding: "36px 28px",
+                      border: "1px solid rgba(255,255,255,0.08)",
                       height: "100%",
+                      transition:
+                        "transform 0.3s ease, background-color 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-6px)";
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(255,255,255,0.08)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.backgroundColor =
+                        "rgba(255,255,255,0.05)";
                     }}
                   >
                     <div style={{ fontSize: "2.5rem", marginBottom: "16px" }}>
-                      {step.icon}
+                      {item.icon}
                     </div>
-                    <div
+                    <p
+                      className="mb-0"
                       style={{
-                        fontSize: "3rem",
-                        fontWeight: "800",
-                        color: "rgba(255,255,255,0.15)",
-                        lineHeight: 1,
-                        marginBottom: "12px",
+                        color: "#e8f5e9",
+                        fontSize: "1rem",
+                        lineHeight: 1.7,
                       }}
                     >
-                      {step.num}
-                    </div>
-                    <h5 className="fw-bold text-white mb-2">{step.title}</h5>
-                    <p className="mb-0 small" style={{ color: "#a8d5ba" }}>
-                      {step.text}
+                      {item.fact}
                     </p>
                   </div>
                 </div>
@@ -579,6 +682,7 @@ function HomePage() {
           </div>
         </FadeSection>
       </div>
+      <WaveDivider fromColor="#0d2b1e" toColor="#f8faf9" />
 
       {/* Onda come funziona → green tips */}
       <WaveDivider fromColor="#1b4332" toColor="#f8faf9" />

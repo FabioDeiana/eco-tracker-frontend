@@ -57,7 +57,12 @@
     "tipsPreviewSubtitle": "Piccoli gesti quotidiani che fanno la differenza.",
     "tipsPreviewCta": "Registrati per ricevere consigli personalizzati",
     "howSubtitle": "Inizia in pochi minuti, completamente gratis.",
-    "finalCtaSubtitle": "Unisciti e inizia a monitorare la tua impronta di carbonio oggi stesso."
+    "finalCtaSubtitle": "Unisciti e inizia a monitorare la tua impronta di carbonio oggi stesso.",
+    "didYouKnowTitle": "Lo sapevi?",
+    "didYouKnowSubtitle": "Qualche dato che potrebbe sorprenderti.",
+    "fact1": "Un volo andata e ritorno Roma-New York emette circa 3 tonnellate di CO₂ per passeggero — quasi il doppio delle emissioni medie annue di una persona in alcuni paesi.",
+    "fact2": "Produrre 1 kg di carne bovina genera in media 27 kg di CO₂ equivalente. Sostituirla con legumi riduce quell'impatto del 90%.",
+    "fact3": "Un'auto media percorre circa 12.000 km all'anno emettendo circa 2 tonnellate di CO₂. Usare i mezzi pubblici per gli stessi tragitti riduce le emissioni dell'80%."
     
 },
   "footer": {

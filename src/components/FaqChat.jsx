@@ -17,13 +17,11 @@ function FaqChat() {
     { key: "q6", question: t("faq.q6"), answer: t("faq.a6") },
   ]
 
-  // Mostra il tooltip dopo 3 secondi
   useEffect(() => {
     const timer = setTimeout(() => setShowTooltip(true), 3000)
     return () => clearTimeout(timer)
   }, [])
 
-  // Scroll automatico verso il basso ad ogni nuovo messaggio
   useEffect(() => {
     if (open) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -31,7 +29,10 @@ function FaqChat() {
   }, [messages, open])
 
   const handleQuestionClick = (faq) => {
-    setMessages((prev) => [...prev, { from: "user", text: faq.question }, { from: "bot", text: faq.answer }])
+    setMessages((prev) => [...prev,
+      { from: "user", text: faq.question },
+      { from: "bot", text: faq.answer }
+    ])
   }
 
   const handleOpen = () => {
@@ -47,30 +48,30 @@ function FaqChat() {
           onClick={handleOpen}
           style={{
             position: "fixed",
-            bottom: "90px",
+            bottom: "92px",
             right: "24px",
-            backgroundColor: "white",
+            backgroundColor: "#1b4332",
+            color: "white",
             borderRadius: "12px",
-            padding: "10px 14px",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+            padding: "10px 16px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
             zIndex: 1000,
             cursor: "pointer",
-            fontSize: "0.9rem",
-            maxWidth: "200px",
-            border: "1px solid #d4edda",
+            fontSize: "0.88rem",
+            maxWidth: "210px",
+            fontWeight: "500",
+            lineHeight: 1.4,
           }}
         >
-          <span>{t("faq.tooltip")}</span>
-          {/* Triangolino in basso */}
+          {t("faq.tooltip")}
           <div style={{
             position: "absolute",
-            bottom: "-8px",
-            right: "28px",
-            width: 0,
-            height: 0,
-            borderLeft: "8px solid transparent",
-            borderRight: "8px solid transparent",
-            borderTop: "8px solid white",
+            bottom: "-7px",
+            right: "22px",
+            width: 0, height: 0,
+            borderLeft: "7px solid transparent",
+            borderRight: "7px solid transparent",
+            borderTop: "7px solid #1b4332",
           }} />
         </div>
       )}
@@ -79,31 +80,97 @@ function FaqChat() {
       <button
         onClick={handleOpen}
         style={{
-          position: "fixed", bottom: "24px", right: "24px", width: "56px", height: "56px",
-          borderRadius: "50%", backgroundColor: "#198754", color: "white", border: "none",
-          fontSize: "1.5rem", boxShadow: "0 4px 12px rgba(0,0,0,0.2)", zIndex: 1000, cursor: "pointer",
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          width: "56px",
+          height: "56px",
+          borderRadius: "50%",
+          backgroundColor: "#1b4332",
+          color: "white",
+          border: "none",
+          fontSize: "1.4rem",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+          zIndex: 1000,
+          cursor: "pointer",
+          transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.transform = "scale(1.1)"
+          e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)"
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.transform = "scale(1)"
+          e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.3)"
         }}
         title={t("faq.title")}
       >
-        {open ? "✖️" : "💬"}
+        {open ? "✕" : "💬"}
       </button>
 
       {/* Finestra chat */}
       {open && (
         <div style={{
-          position: "fixed", bottom: "90px", right: "24px", width: "320px", maxHeight: "450px",
-          backgroundColor: "white", borderRadius: "16px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-          zIndex: 1000, display: "flex", flexDirection: "column", overflow: "hidden",
+          position: "fixed",
+          bottom: "92px",
+          right: "24px",
+          width: "340px",
+          maxHeight: "480px",
+          backgroundColor: "white",
+          borderRadius: "20px",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.2)",
+          zIndex: 1000,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
         }}>
-          <div className="bg-success text-white p-3 fw-bold">🌿 {t("faq.title")}</div>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: "12px", maxHeight: "260px" }}>
+          {/* Header */}
+          <div style={{
+            backgroundColor: "#1b4332",
+            padding: "16px 20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}>
+            <div style={{
+              width: "36px", height: "36px",
+              backgroundColor: "rgba(255,255,255,0.15)",
+              borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "1.1rem",
+            }}>
+              🌿
+            </div>
+            <div>
+              <p className="mb-0 fw-bold text-white" style={{ fontSize: "0.95rem" }}>{t("faq.title")}</p>
+              <p className="mb-0" style={{ fontSize: "0.75rem", color: "#a8d5ba" }}>Eco-Tracker</p>
+            </div>
+          </div>
+
+          {/* Messaggi */}
+          <div style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "16px",
+            maxHeight: "220px",
+            backgroundColor: "#f8faf9",
+          }}>
             {messages.map((msg, i) => (
-              <div key={i} className={`mb-2 d-flex ${msg.from === "user" ? "justify-content-end" : "justify-content-start"}`}>
+              <div key={i} style={{
+                display: "flex",
+                justifyContent: msg.from === "user" ? "flex-end" : "flex-start",
+                marginBottom: "10px",
+              }}>
                 <div style={{
-                  backgroundColor: msg.from === "user" ? "#198754" : "#f0fff4",
+                  backgroundColor: msg.from === "user" ? "#1b4332" : "white",
                   color: msg.from === "user" ? "white" : "#333",
-                  borderRadius: "10px", padding: "8px 12px", maxWidth: "80%", fontSize: "0.85rem",
+                  borderRadius: msg.from === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                  padding: "10px 14px",
+                  maxWidth: "82%",
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                 }}>
                   {msg.text}
                 </div>
@@ -112,15 +179,36 @@ function FaqChat() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div style={{ borderTop: "1px solid #eee", padding: "10px", maxHeight: "150px", overflowY: "auto" }}>
-            <p className="text-muted small mb-2">{t("faq.suggestedQuestions")}</p>
-            <div className="d-flex flex-column gap-1">
+          {/* Domande suggerite */}
+          <div style={{
+            borderTop: "1px solid #e9ecef",
+            padding: "12px 16px",
+            maxHeight: "180px",
+            overflowY: "auto",
+            backgroundColor: "white",
+          }}>
+            <p style={{ fontSize: "0.75rem", color: "#6c757d", marginBottom: "8px", fontWeight: "600" }}>
+              {t("faq.suggestedQuestions")}
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               {faqs.map((faq) => (
                 <button
                   key={faq.key}
-                  className="btn btn-outline-success btn-sm text-start"
-                  style={{ fontSize: "0.8rem", borderRadius: "8px" }}
                   onClick={() => handleQuestionClick(faq)}
+                  style={{
+                    backgroundColor: "transparent",
+                    border: "1px solid #d4edda",
+                    borderRadius: "10px",
+                    padding: "8px 12px",
+                    fontSize: "0.8rem",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    color: "#1b4332",
+                    fontWeight: "500",
+                    transition: "background-color 0.2s ease",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f0fff4"}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                 >
                   {faq.question}
                 </button>
