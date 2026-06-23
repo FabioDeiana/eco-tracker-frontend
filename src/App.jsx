@@ -17,6 +17,7 @@ import StatsPage from "./pages/StatsPage.jsx";
 import GreenTipPage from "./pages/GreenTipPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import UsersPage from "./pages/UsersPage.jsx";
+import HomePage from "./pages/HomePage.jsx"
 
 // AppContent sta DENTRO BrowserRouter così può usare useNavigate
 function AppContent() {
@@ -42,8 +43,7 @@ function AppContent() {
   const admin = token ? isAdmin() : false;
 
   const location = useLocation();
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/"
 
   return (
     <>
@@ -52,7 +52,7 @@ function AppContent() {
 
       <Routes>
         {/* Rotte pubbliche */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <HomePage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route
           path="/register"
@@ -93,7 +93,7 @@ function AppContent() {
           }
         />
 
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   );
