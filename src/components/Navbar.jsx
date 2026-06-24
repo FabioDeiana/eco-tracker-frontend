@@ -14,21 +14,30 @@ function Navbar({ onLogout, isAdmin }) {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-success">
-      <div className="container">
-        <Link className="navbar-brand fw-bold" to="/">
+    <nav style={{
+      backgroundColor: "#1b4332",
+      padding: "0",
+      boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+    }}>
+      <div className="container d-flex align-items-center justify-content-between" style={{ height: "64px" }}>
+
+        <Link to="/" style={{
+          color: "white", textDecoration: "none", fontWeight: "800",
+          fontSize: "1.2rem", letterSpacing: "-0.3px",
+          display: "flex", alignItems: "center", gap: "8px",
+        }}>
           🌿 Eco-Tracker
         </Link>
 
-        {/* Links */}
         <div className="d-flex align-items-center gap-1">
           <Link to="/dashboard" style={{
             color: isActive("/dashboard") ? "white" : "rgba(255,255,255,0.7)",
             textDecoration: "none",
             fontWeight: isActive("/dashboard") ? "600" : "400",
-            fontSize: "0.95rem",
-            padding: "6px 12px",
-            borderRadius: "8px",
+            fontSize: "0.95rem", padding: "6px 12px", borderRadius: "8px",
             backgroundColor: isActive("/dashboard") ? "rgba(255,255,255,0.1)" : "transparent",
             transition: "all 0.2s",
           }}>
@@ -41,9 +50,7 @@ function Navbar({ onLogout, isAdmin }) {
                 color: isActive("/stats") ? "white" : "rgba(255,255,255,0.7)",
                 textDecoration: "none",
                 fontWeight: isActive("/stats") ? "600" : "400",
-                fontSize: "0.95rem",
-                padding: "6px 12px",
-                borderRadius: "8px",
+                fontSize: "0.95rem", padding: "6px 12px", borderRadius: "8px",
                 backgroundColor: isActive("/stats") ? "rgba(255,255,255,0.1)" : "transparent",
                 transition: "all 0.2s",
               }}>
@@ -53,9 +60,7 @@ function Navbar({ onLogout, isAdmin }) {
                 color: isActive("/users") ? "white" : "rgba(255,255,255,0.7)",
                 textDecoration: "none",
                 fontWeight: isActive("/users") ? "600" : "400",
-                fontSize: "0.95rem",
-                padding: "6px 12px",
-                borderRadius: "8px",
+                fontSize: "0.95rem", padding: "6px 12px", borderRadius: "8px",
                 backgroundColor: isActive("/users") ? "rgba(255,255,255,0.1)" : "transparent",
                 transition: "all 0.2s",
               }}>
@@ -65,9 +70,7 @@ function Navbar({ onLogout, isAdmin }) {
                 color: isActive("/green-tips") ? "white" : "rgba(255,255,255,0.7)",
                 textDecoration: "none",
                 fontWeight: isActive("/green-tips") ? "600" : "400",
-                fontSize: "0.95rem",
-                padding: "6px 12px",
-                borderRadius: "8px",
+                fontSize: "0.95rem", padding: "6px 12px", borderRadius: "8px",
                 backgroundColor: isActive("/green-tips") ? "rgba(255,255,255,0.1)" : "transparent",
                 transition: "all 0.2s",
               }}>
@@ -81,9 +84,7 @@ function Navbar({ onLogout, isAdmin }) {
               color: isActive("/profile") ? "white" : "rgba(255,255,255,0.7)",
               textDecoration: "none",
               fontWeight: isActive("/profile") ? "600" : "400",
-              fontSize: "0.95rem",
-              padding: "6px 12px",
-              borderRadius: "8px",
+              fontSize: "0.95rem", padding: "6px 12px", borderRadius: "8px",
               backgroundColor: isActive("/profile") ? "rgba(255,255,255,0.1)" : "transparent",
               transition: "all 0.2s",
             }}>
@@ -92,21 +93,14 @@ function Navbar({ onLogout, isAdmin }) {
           )}
         </div>
 
-        {/* Destra — lingua + logout */}
         <div className="d-flex align-items-center gap-3">
           <button
             onClick={toggleLanguage}
             style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: "4px",
-              borderRadius: "6px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              color: "rgba(255,255,255,0.8)",
-              fontSize: "0.85rem",
+              background: "none", border: "none", cursor: "pointer",
+              padding: "4px", borderRadius: "6px",
+              display: "flex", alignItems: "center", gap: "6px",
+              color: "rgba(255,255,255,0.8)", fontSize: "0.85rem",
             }}
             title={i18n.language.startsWith("it") ? "Switch to English" : "Passa all'italiano"}
           >
@@ -118,19 +112,14 @@ function Navbar({ onLogout, isAdmin }) {
             style={{
               backgroundColor: "transparent",
               border: "1px solid rgba(255,255,255,0.4)",
-              color: "white",
-              padding: "6px 16px",
-              borderRadius: "8px",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-              fontWeight: "500",
+              color: "white", padding: "6px 16px", borderRadius: "8px",
+              fontSize: "0.9rem", cursor: "pointer", fontWeight: "500",
               transition: "all 0.2s",
             }}
           >
             {t("navbar.logout")}
           </button>
         </div>
-
       </div>
     </nav>
   )

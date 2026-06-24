@@ -219,11 +219,8 @@ function DashboardPage() {
                   </>
                 ) : (
                   <>
-                    <h2
-                      className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}
-                    >
-                      {isMeglio ? "" : "+"}
-                      {differenza.toFixed(2)} kg
+                    <h2 style={{ fontWeight: "800", color: isMeglio ? "#1b4332" : "#dc3545", fontSize: "2.2rem", margin: "0" }}>
+                      {isMeglio ? "" : "+"}{differenza.toFixed(2)} kg
                     </h2>
                     <p style={{ color: "#6c757d", fontSize: "0.85rem", marginTop: "4px" }}>
                       {isMeglio ? t("dashboard.belowAverage") : t("dashboard.aboveAverage")}
