@@ -145,7 +145,10 @@
     "aboveAverage": "⚠️ Sopra la media globale",
     "loadError": "Errore nel caricamento dei dati",
     "addError": "Errore durante l'aggiunta dell'attività",
-    "deleteError": "Errore durante l'eliminazione dell'attività"
+    "deleteError": "Errore durante l'eliminazione dell'attività",
+    "streakAtRisk": "A rischio!",
+    "streakActive": "Continua così!",
+    "streakDays": "giorni consecutivi"
   },
   "profile": {
     "title": "Il tuo Profilo",

@@ -144,7 +144,10 @@
     "aboveAverage": "⚠️ Above global average",
     "loadError": "Error loading data",
     "addError": "Error adding activity",
-    "deleteError": "Error deleting activity"
+    "deleteError": "Error deleting activity",
+    "streakAtRisk": "At risk!",
+    "streakActive": "Keep it up!",
+    "streakDays": "consecutive days"
   },
   "profile": {
     "title": "Your Profile",
