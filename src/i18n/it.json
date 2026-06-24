@@ -100,7 +100,8 @@
     "loading": "Accesso in corso...",
     "noAccount": "Non hai un account?",
     "register": "Registrati",
-    "error": "Credenziali non valide"
+    "error": "Credenziali non valide",
+    "backHome": "Torna alla homepage"
   },
   "register": {
     "title": "Eco-Tracker",
@@ -112,7 +113,8 @@
     "loading": "Registrazione in corso...",
     "hasAccount": "Hai già un account?",
     "login": "Accedi",
-    "error": "Errore durante la registrazione"
+    "error": "Errore durante la registrazione",
+    "backHome": "Torna alla homepage"
   },
   "activities": {
   "car": "Auto",
@@ -188,7 +190,7 @@
     "loadError": "Errore nel caricamento delle statistiche"
   },
   "users": {
-    "title": "👥 Gestione Utenti",
+    "title": "Gestione Utenti",
     "name": "Nome",
     "email": "Email",
     "role": "Ruolo",
@@ -218,7 +220,7 @@
     "saving": "Salvataggio...",
     "allCategories": "🔍 Tutte le categorie",
     "noTips": "Nessun consiglio disponibile — aggiungine uno!",
-    "savingEstimate": "🌿 Risparmio stimato",
+    "savingEstimate": "Risparmio stimato",
     "loadError": "Errore nel caricamento dei consigli",
     "addSuccess": "Consiglio aggiunto!",
     "addError": "Errore durante la creazione del consiglio",

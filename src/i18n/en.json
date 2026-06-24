@@ -99,7 +99,8 @@
     "loading": "Signing in...",
     "noAccount": "Don't have an account?",
     "register": "Sign up",
-    "error": "Invalid credentials"
+    "error": "Invalid credentials",
+    "backHome": "Back to homepage"
   },
   "register": {
     "title": "Eco-Tracker",
@@ -111,7 +112,8 @@
     "loading": "Signing up...",
     "hasAccount": "Already have an account?",
     "login": "Sign in",
-    "error": "Registration error"
+    "error": "Registration error",
+    "backHome": "Back to homepage"
   },
   "activities": {
   "car": "Car",
@@ -187,7 +189,7 @@
     "loadError": "Error loading statistics"
   },
   "users": {
-    "title": "👥 User Management",
+    "title": "User Management",
     "name": "Name",
     "email": "Email",
     "role": "Role",
@@ -217,7 +219,7 @@
     "saving": "Saving...",
     "allCategories": "🔍 All categories",
     "noTips": "No tips available — add one!",
-    "savingEstimate": "🌿 Estimated saving",
+    "savingEstimate": "Estimated saving",
     "loadError": "Error loading tips",
     "addSuccess": "Tip added!",
     "addError": "Error creating tip",

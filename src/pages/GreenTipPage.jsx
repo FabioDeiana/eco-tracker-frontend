@@ -38,7 +38,7 @@ function GreenTipPage() {
         ? `/tips/category?category=${category}`
         : "/tips";
       const data = await apiFetch(endpoint);
-      console.log(data)
+      console.log(data);
       setTips(data);
     } catch (err) {
       setError(t("tips.loadError"));
@@ -102,124 +102,242 @@ function GreenTipPage() {
 
   return (
     <div
-      style={{ minHeight: "100vh", paddingTop: "2rem", paddingBottom: "3rem" }}
+      style={{
+        backgroundColor: "#f8faf9",
+        minHeight: "100vh",
+        paddingBottom: "60px",
+      }}
     >
-      <div className="container">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h4 className="fw-bold text-success mb-0">{t("tips.title")}</h4>
+      <div className="container" style={{ paddingTop: "40px" }}>
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "32px",
+          }}
+        >
+          <h3
+            style={{
+              fontWeight: "800",
+              color: "#1b4332",
+              margin: 0,
+              fontSize: "1.8rem",
+            }}
+          >
+            {t("tips.title")}
+          </h3>
           <button
-            className="btn btn-success"
-            style={{ borderRadius: "10px" }}
             onClick={() => setShowForm(!showForm)}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "12px",
+              cursor: "pointer",
+              backgroundColor: showForm ? "#6c757d" : "#1b4332",
+              color: "white",
+              border: "none",
+              fontWeight: "600",
+              fontSize: "0.95rem",
+              transition: "background-color 0.2s",
+            }}
           >
             {showForm ? t("tips.cancel") : t("tips.newTip")}
           </button>
         </div>
 
+        {/* Form nuovo tip */}
         {showForm && (
           <div
-            className="card shadow-sm border-0 mb-4"
-            style={{ borderRadius: "16px", borderLeft: "4px solid #198754" }}
+            style={{
+              backgroundColor: "white",
+              borderRadius: "20px",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+              overflow: "hidden",
+              marginBottom: "24px",
+            }}
           >
-            <div className="card-body">
-              <h6 className="fw-bold mb-3">{t("tips.newTipTitle")}</h6>
+            <div style={{ backgroundColor: "#1b4332", padding: "16px 20px" }}>
+              <h6 style={{ color: "white", fontWeight: "700", margin: 0 }}>
+                {t("tips.newTipTitle")}
+              </h6>
+            </div>
+            <div style={{ padding: "24px" }}>
               {formError && (
-                <div className="alert alert-danger py-2">{formError}</div>
+                <div
+                  style={{
+                    backgroundColor: "#fde8e8",
+                    border: "1px solid #f5c6cb",
+                    borderRadius: "12px",
+                    padding: "12px 16px",
+                    color: "#dc3545",
+                    marginBottom: "16px",
+                  }}
+                >
+                  {formError}
+                </div>
               )}
               {formSuccess && (
-                <div className="alert alert-success py-2">{formSuccess}</div>
+                <div
+                  style={{
+                    backgroundColor: "#f0fff4",
+                    border: "1px solid #b7e4c7",
+                    borderRadius: "12px",
+                    padding: "12px 16px",
+                    color: "#1b4332",
+                    marginBottom: "16px",
+                  }}
+                >
+                  {formSuccess}
+                </div>
               )}
               <form onSubmit={handleCreateTip}>
-                <div className="mb-3">
-                  <label className="form-label">
-                    {t("tips.titleField")} (IT)
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    className="form-control"
-                    placeholder="es. Usa i mezzi pubblici"
-                    value={formData.title}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">
-                    {t("tips.description")} (IT)
-                  </label>
-                  <textarea
-                    name="description"
-                    className="form-control"
-                    placeholder="Descrivi il consiglio..."
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows={3}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">
-                    {t("tips.titleField")} (EN)
-                  </label>
-                  <input
-                    type="text"
-                    name="titleEn"
-                    className="form-control"
-                    placeholder="e.g. Use public transport"
-                    value={formData.titleEn}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">
-                    {t("tips.description")} (EN)
-                  </label>
-                  <textarea
-                    name="descriptionEn"
-                    className="form-control"
-                    placeholder="Describe the tip in English..."
-                    value={formData.descriptionEn}
-                    onChange={handleChange}
-                    rows={3}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">{t("tips.co2Saved")}</label>
-                  <input
-                    type="number"
-                    name="co2SavedEstimate"
-                    className="form-control"
-                    placeholder="es. 2.5"
-                    value={formData.co2SavedEstimate}
-                    onChange={handleChange}
-                    min="0"
-                    step="0.1"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">{t("tips.category")}</label>
-                  <select
-                    name="category"
-                    className="form-select"
-                    value={formData.category}
-                    onChange={handleChange}
-                  >
-                    {ACTIVITY_TYPES.map((a) => (
-                      <option key={a.value} value={a.value}>
-                        {a.label}
-                      </option>
-                    ))}
-                  </select>
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <label
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                      className="form-label"
+                    >
+                      {t("tips.titleField")} (IT)
+                    </label>
+                    <input
+                      type="text"
+                      name="title"
+                      className="form-control"
+                      placeholder="es. Usa i mezzi pubblici"
+                      value={formData.title}
+                      onChange={handleChange}
+                      required
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                      className="form-label"
+                    >
+                      {t("tips.titleField")} (EN)
+                    </label>
+                    <input
+                      type="text"
+                      name="titleEn"
+                      className="form-control"
+                      placeholder="e.g. Use public transport"
+                      value={formData.titleEn}
+                      onChange={handleChange}
+                      required
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                      className="form-label"
+                    >
+                      {t("tips.description")} (IT)
+                    </label>
+                    <textarea
+                      name="description"
+                      className="form-control"
+                      placeholder="Descrivi il consiglio..."
+                      value={formData.description}
+                      onChange={handleChange}
+                      rows={3}
+                      required
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                      className="form-label"
+                    >
+                      {t("tips.description")} (EN)
+                    </label>
+                    <textarea
+                      name="descriptionEn"
+                      className="form-control"
+                      placeholder="Describe the tip in English..."
+                      value={formData.descriptionEn}
+                      onChange={handleChange}
+                      rows={3}
+                      required
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                      className="form-label"
+                    >
+                      {t("tips.co2Saved")}
+                    </label>
+                    <input
+                      type="number"
+                      name="co2SavedEstimate"
+                      className="form-control"
+                      placeholder="es. 2.5"
+                      value={formData.co2SavedEstimate}
+                      onChange={handleChange}
+                      min="0"
+                      step="0.1"
+                      required
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                      className="form-label"
+                    >
+                      {t("tips.category")}
+                    </label>
+                    <select
+                      name="category"
+                      className="form-select"
+                      value={formData.category}
+                      onChange={handleChange}
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
+                    >
+                      {ACTIVITY_TYPES.map((a) => (
+                        <option key={a.value} value={a.value}>
+                          {a.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-success"
                   disabled={formLoading}
-                  style={{ borderRadius: "10px" }}
+                  style={{
+                    marginTop: "20px",
+                    padding: "12px 24px",
+                    backgroundColor: "#1b4332",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "12px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                  }}
                 >
                   {formLoading ? t("tips.saving") : t("tips.save")}
                 </button>
@@ -228,12 +346,21 @@ function GreenTipPage() {
           </div>
         )}
 
-        <div className="mb-4">
+        {/* Filtro categoria */}
+        <div style={{ marginBottom: "24px" }}>
           <select
-            className="form-select w-auto"
             value={selectedCategory}
             onChange={handleCategoryChange}
-            style={{ borderRadius: "10px" }}
+            style={{
+              padding: "10px 16px",
+              borderRadius: "12px",
+              border: "1.5px solid #e9ecef",
+              backgroundColor: "white",
+              fontWeight: "600",
+              color: "#1b4332",
+              cursor: "pointer",
+              fontSize: "0.9rem",
+            }}
           >
             <option value="">{t("tips.allCategories")}</option>
             {ACTIVITY_TYPES.map((a) => (
@@ -244,59 +371,131 @@ function GreenTipPage() {
           </select>
         </div>
 
+        {/* Lista tips */}
         {loading ? (
-          <div className="text-center mt-5">
+          <div style={{ textAlign: "center", padding: "60px 0" }}>
             <div className="spinner-border text-success" role="status" />
           </div>
         ) : error ? (
-          <div className="alert alert-danger">{error}</div>
+          <div
+            style={{
+              backgroundColor: "#fde8e8",
+              border: "1px solid #f5c6cb",
+              borderRadius: "12px",
+              padding: "16px",
+              color: "#dc3545",
+            }}
+          >
+            {error}
+          </div>
         ) : tips.length === 0 ? (
-          <div className="text-center mt-5">
-            <div style={{ fontSize: "3rem" }}>🌱</div>
-            <p className="text-muted mt-2">{t("tips.noTips")}</p>
+          <div style={{ textAlign: "center", padding: "60px 0" }}>
+            <div style={{ fontSize: "3rem", marginBottom: "12px" }}>🌱</div>
+            <p style={{ color: "#6c757d" }}>{t("tips.noTips")}</p>
           </div>
         ) : (
           <div className="row g-3">
             {tips.map((tip) => (
               <div key={tip.id} className="col-md-6 col-lg-4">
                 <div
-                  className="card shadow-sm h-100 border-0"
                   style={{
-                    borderRadius: "16px",
-                    borderTop: "4px solid #198754",
+                    backgroundColor: "white",
+                    borderRadius: "20px",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                    overflow: "hidden",
+                    height: "100%",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow =
+                      "0 8px 32px rgba(0,0,0,0.12)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow =
+                      "0 4px 20px rgba(0,0,0,0.07)";
                   }}
                 >
-                  <div className="card-body">
-                    <span className="badge bg-success mb-2">
+                  <div style={{ height: "6px", backgroundColor: "#40916c" }} />
+                  <div style={{ padding: "20px" }}>
+                    <span
+                      style={{
+                        backgroundColor: "#f0fff4",
+                        color: "#1b4332",
+                        border: "1px solid #b7e4c7",
+                        borderRadius: "6px",
+                        padding: "3px 10px",
+                        fontSize: "0.78rem",
+                        fontWeight: "600",
+                      }}
+                    >
                       {ACTIVITY_TYPES.find((a) => a.value === tip.category)
                         ?.label || tip.category}
                     </span>
-                    <h6 className="fw-bold">
+                    <h6
+                      style={{
+                        fontWeight: "700",
+                        margin: "12px 0 8px",
+                        color: "#1b4332",
+                      }}
+                    >
                       {i18n.language.startsWith("en") && tip.titleEn
                         ? tip.titleEn
                         : tip.title}
                     </h6>
-                    <p className="text-muted small mb-3">
+                    <p
+                      style={{
+                        fontSize: "0.85rem",
+                        color: "#6c757d",
+                        marginBottom: "16px",
+                        lineHeight: 1.6,
+                      }}
+                    >
                       {i18n.language.startsWith("en") && tip.descriptionEn
                         ? tip.descriptionEn
                         : tip.description}
                     </p>
-                    <div className="mt-auto d-flex justify-content-between align-items-center">
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
                       <span
-                        className="badge rounded-pill"
                         style={{
                           backgroundColor: "#f0fff4",
-                          color: "#198754",
-                          border: "1px solid #198754",
+                          color: "#1b4332",
+                          border: "1px solid #b7e4c7",
+                          borderRadius: "50px",
+                          padding: "4px 12px",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
                         }}
                       >
                         🌿 {t("tips.savingEstimate")}: {tip.co2SavedEstimate} kg
                         CO₂
                       </span>
                       <button
-                        className="btn btn-outline-danger btn-sm"
-                        style={{ borderRadius: "8px" }}
                         onClick={() => handleDeleteTip(tip.id)}
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "1px solid #f5c6cb",
+                          borderRadius: "8px",
+                          padding: "4px 10px",
+                          cursor: "pointer",
+                          color: "#dc3545",
+                          fontSize: "0.85rem",
+                          transition: "background-color 0.2s",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.backgroundColor = "#fde8e8")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.backgroundColor =
+                            "transparent")
+                        }
                       >
                         🗑️
                       </button>

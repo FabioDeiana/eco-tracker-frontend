@@ -198,58 +198,141 @@ function DashboardPage() {
     );
 
   return (
-    <div style={{ backgroundColor: "#f5f6f5", minHeight: "100vh" }}>
-      <div className="container mt-4 mb-5 pt-3">
-        <h4 className="fw-bold text-success mb-4">{t("dashboard.title")}</h4>
+    <div
+      style={{
+        backgroundColor: "#f8faf9",
+        minHeight: "100vh",
+        paddingBottom: "60px",
+      }}
+    >
+      <div className="container" style={{ paddingTop: "40px" }}>
+        {/* Titolo */}
+        <h3
+          style={{
+            fontWeight: "800",
+            color: "#1b4332",
+            marginBottom: "32px",
+            fontSize: "1.8rem",
+          }}
+        >
+          {t("dashboard.title")}
+        </h3>
 
+        {/* Cards CO₂ */}
         <div className="row g-3 mb-4">
           <div className="col-md-4">
             <div
-              className="card shadow-sm h-100 border-0"
               style={{
-                background: "linear-gradient(135deg, #d4edda, #f0fff4)",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
               }}
             >
-              <div className="card-body text-center py-4">
-                <div style={{ fontSize: "2rem" }}>🌱</div>
-                <p className="text-muted mb-1 mt-2">
+              <div style={{ height: "6px", backgroundColor: "#40916c" }} />
+              <div style={{ padding: "24px", textAlign: "center" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🌱</div>
+                <p
+                  style={{
+                    color: "#6c757d",
+                    marginBottom: "4px",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {t("dashboard.co2Today")}
                 </p>
-                <h2 className="fw-bold text-success">{co2Oggi.toFixed(2)}</h2>
-                <p className="text-muted small">kg CO₂</p>
+                <h2
+                  style={{
+                    fontWeight: "800",
+                    color: "#1b4332",
+                    fontSize: "2.2rem",
+                    margin: "0",
+                  }}
+                >
+                  {co2Oggi.toFixed(2)}
+                </h2>
+                <p
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "0.85rem",
+                    marginTop: "4px",
+                  }}
+                >
+                  kg CO₂
+                </p>
               </div>
             </div>
           </div>
           <div className="col-md-4">
             <div
-              className="card shadow-sm h-100 border-0"
               style={{
-                background: isMeglio
-                  ? "linear-gradient(135deg, #d4edda, #f0fff4)"
-                  : "linear-gradient(135deg, #fde8e8, #fff5f5)",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
               }}
             >
-              <div className="card-body text-center py-4">
-                <div style={{ fontSize: "2rem" }}>{isMeglio ? "🌍" : "⚠️"}</div>
-                <p className="text-muted mb-1 mt-2">
+              <div
+                style={{
+                  height: "6px",
+                  backgroundColor: isMeglio ? "#40916c" : "#dc3545",
+                }}
+              />
+              <div style={{ padding: "24px", textAlign: "center" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "8px" }}>
+                  {isMeglio ? "🌍" : "⚠️"}
+                </div>
+                <p
+                  style={{
+                    color: "#6c757d",
+                    marginBottom: "4px",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {t("dashboard.vsGlobal")}
                 </p>
                 {todayActivities.length === 0 ? (
                   <>
-                    <h2 className="fw-bold text-muted">—</h2>
-                    <p className="text-muted small">
+                    <h2
+                      style={{
+                        fontWeight: "800",
+                        color: "#adb5bd",
+                        fontSize: "2.2rem",
+                        margin: "0",
+                      }}
+                    >
+                      —
+                    </h2>
+                    <p
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "0.85rem",
+                        marginTop: "4px",
+                      }}
+                    >
                       {t("dashboard.noActivities")}
                     </p>
                   </>
                 ) : (
                   <>
                     <h2
-                      className={`fw-bold ${isMeglio ? "text-success" : "text-danger"}`}
+                      style={{
+                        fontWeight: "800",
+                        color: isMeglio ? "#1b4332" : "#dc3545",
+                        fontSize: "2.2rem",
+                        margin: "0",
+                      }}
                     >
                       {isMeglio ? "" : "+"}
-                      {differenza.toFixed(2)}
+                      {differenza.toFixed(2)} kg
                     </h2>
-                    <p className="small text-muted">
+                    <p
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "0.85rem",
+                        marginTop: "4px",
+                      }}
+                    >
                       {isMeglio
                         ? t("dashboard.belowAverage")
                         : t("dashboard.aboveAverage")}
@@ -261,20 +344,42 @@ function DashboardPage() {
           </div>
           <div className="col-md-4">
             <div
-              className="card shadow-sm h-100 border-0"
               style={{
-                background: "linear-gradient(135deg, #dbeafe, #f0f7ff)",
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
               }}
             >
-              <div className="card-body text-center py-4">
-                <div style={{ fontSize: "2rem" }}>📋</div>
-                <p className="text-muted mb-1 mt-2">
+              <div style={{ height: "6px", backgroundColor: "#2563eb" }} />
+              <div style={{ padding: "24px", textAlign: "center" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "8px" }}>📋</div>
+                <p
+                  style={{
+                    color: "#6c757d",
+                    marginBottom: "4px",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {t("dashboard.activitiesCount")}
                 </p>
-                <h2 className="fw-bold" style={{ color: "#2563eb" }}>
+                <h2
+                  style={{
+                    fontWeight: "800",
+                    color: "#2563eb",
+                    fontSize: "2.2rem",
+                    margin: "0",
+                  }}
+                >
                   {todayActivities.length}
                 </h2>
-                <p className="text-muted small">
+                <p
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "0.85rem",
+                    marginTop: "4px",
+                  }}
+                >
                   {t("dashboard.activitiesRegistered")}
                 </p>
               </div>
@@ -283,26 +388,51 @@ function DashboardPage() {
         </div>
 
         <div className="row g-4">
+          {/* Colonna sinistra */}
           <div className="col-lg-5">
+            {/* Form aggiungi attività */}
             <div
-              className="card shadow-sm mb-4 border-0"
-              style={{ borderRadius: "16px", borderLeft: "4px solid #198754" }}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
+                marginBottom: "24px",
+              }}
             >
-              <div className="card-body">
-                <h6 className="fw-bold mb-3">
+              <div style={{ backgroundColor: "#1b4332", padding: "16px 20px" }}>
+                <h6
+                  style={{
+                    color: "white",
+                    fontWeight: "700",
+                    margin: 0,
+                    fontSize: "0.95rem",
+                  }}
+                >
                   ➕ {t("dashboard.addActivity")}
                 </h6>
+              </div>
+              <div style={{ padding: "20px" }}>
                 {formError && (
                   <div className="alert alert-danger py-2">{formError}</div>
                 )}
                 <form onSubmit={handleAddActivity}>
                   <div className="mb-3">
-                    <label className="form-label">{t("dashboard.type")}</label>
+                    <label
+                      className="form-label"
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                    >
+                      {t("dashboard.type")}
+                    </label>
                     <select
                       name="type"
                       className="form-select"
                       value={formData.type}
                       onChange={handleChange}
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
                     >
                       {ACTIVITY_TYPES.map((a) => (
                         <option key={a.value} value={a.value}>
@@ -312,7 +442,10 @@ function DashboardPage() {
                     </select>
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">
+                    <label
+                      className="form-label"
+                      style={{ fontWeight: "600", fontSize: "0.9rem" }}
+                    >
                       {t("dashboard.quantity")} ({selectedType.unit})
                     </label>
                     <input
@@ -325,12 +458,33 @@ function DashboardPage() {
                       min="0"
                       step="0.1"
                       required
+                      style={{
+                        borderRadius: "12px",
+                        border: "1.5px solid #e9ecef",
+                      }}
                     />
                   </div>
                   <button
                     type="submit"
-                    className="btn btn-success w-100"
                     disabled={formLoading}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      backgroundColor: "#1b4332",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "12px",
+                      fontWeight: "600",
+                      fontSize: "0.95rem",
+                      cursor: "pointer",
+                      transition: "background-color 0.2s ease",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#2d6a4f")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#1b4332")
+                    }
                   >
                     {formLoading
                       ? t("dashboard.adding")
@@ -340,108 +494,240 @@ function DashboardPage() {
               </div>
             </div>
 
+            {/* Attività di oggi */}
             <div
-              className="card shadow-sm mb-4 border-0"
-              style={{ borderRadius: "16px", borderLeft: "4px solid #0d6efd" }}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
+                marginBottom: "24px",
+              }}
             >
-              <div className="card-body">
-                <h6 className="fw-bold mb-3">
+              <div style={{ backgroundColor: "#2563eb", padding: "16px 20px" }}>
+                <h6
+                  style={{
+                    color: "white",
+                    fontWeight: "700",
+                    margin: 0,
+                    fontSize: "0.95rem",
+                  }}
+                >
                   📋 {t("dashboard.todayActivities")}
                 </h6>
+              </div>
+              <div style={{ padding: "20px" }}>
                 {todayActivities.length === 0 ? (
-                  <p className="text-muted text-center py-3">
+                  <p
+                    style={{
+                      color: "#6c757d",
+                      textAlign: "center",
+                      padding: "20px 0",
+                      margin: 0,
+                    }}
+                  >
                     {t("dashboard.noTodayActivities")}
                   </p>
                 ) : (
-                  <ul className="list-group list-group-flush">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "12px",
+                    }}
+                  >
                     {todayActivities.map((activity) => (
-                      <li
+                      <div
                         key={activity.id}
-                        className="list-group-item d-flex justify-content-between align-items-center px-0"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "12px 16px",
+                          backgroundColor: "#f8faf9",
+                          borderRadius: "12px",
+                        }}
                       >
                         <div>
-                          <span>
+                          <p
+                            style={{
+                              margin: 0,
+                              fontWeight: "600",
+                              fontSize: "0.9rem",
+                            }}
+                          >
                             {ACTIVITY_TYPES.find(
                               (a) => a.value === activity.type,
                             )?.label || activity.type}
-                          </span>
-                          <br />
-                          <small className="text-muted">
+                          </p>
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: "0.8rem",
+                              color: "#6c757d",
+                            }}
+                          >
                             {activity.value}{" "}
                             {
                               ACTIVITY_TYPES.find(
                                 (a) => a.value === activity.type,
                               )?.unit
                             }
-                          </small>
+                          </p>
                         </div>
-                        <div className="d-flex align-items-center gap-2">
-                          <span className="badge bg-success rounded-pill">
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              backgroundColor: "#f0fff4",
+                              color: "#1b4332",
+                              border: "1px solid #b7e4c7",
+                              borderRadius: "50px",
+                              padding: "4px 10px",
+                              fontSize: "0.8rem",
+                              fontWeight: "600",
+                            }}
+                          >
                             {activity.co2Emission?.toFixed(2)} kg CO₂
                           </span>
                           <button
-                            className="btn btn-outline-danger btn-sm"
                             onClick={() =>
                               handleDeleteActivity(
                                 activity.id,
                                 activity.co2Emission,
                               )
                             }
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "1px solid #f8d7da",
+                              borderRadius: "8px",
+                              padding: "4px 8px",
+                              cursor: "pointer",
+                              fontSize: "0.85rem",
+                              color: "#dc3545",
+                              transition: "background-color 0.2s",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#f8d7da")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                            }
                           >
                             🗑️
                           </button>
                         </div>
-                      </li>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
             </div>
 
+            {/* Consigli */}
             <div
-              className="card shadow-sm mb-4 border-0"
-              style={{ borderRadius: "16px", borderLeft: "4px solid #20c997" }}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
+              }}
             >
-              <div className="card-body">
-                <h6 className="fw-bold mb-3">{t("dashboard.tips")}</h6>
+              <div style={{ backgroundColor: "#40916c", padding: "16px 20px" }}>
+                <h6
+                  style={{
+                    color: "white",
+                    fontWeight: "700",
+                    margin: 0,
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  {t("dashboard.tips")}
+                </h6>
+              </div>
+              <div style={{ padding: "20px" }}>
                 {suggestedTips.length === 0 ? (
-                  <p className="text-muted text-center py-3">
+                  <p
+                    style={{
+                      color: "#6c757d",
+                      textAlign: "center",
+                      padding: "20px 0",
+                      margin: 0,
+                    }}
+                  >
                     {t("dashboard.noTips")}
                   </p>
                 ) : (
-                  <div className="row g-2">
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "12px",
+                    }}
+                  >
                     {suggestedTips.map((tip) => (
-                      <div key={tip.id} className="col-12">
-                        <div
-                          className="card border-0"
+                      <div
+                        key={tip.id}
+                        style={{
+                          backgroundColor: "#f0fff4",
+                          borderRadius: "12px",
+                          padding: "14px 16px",
+                          borderLeft: "3px solid #40916c",
+                        }}
+                      >
+                        <span
                           style={{
-                            backgroundColor: "#f0fff8",
-                            borderRadius: "12px",
+                            backgroundColor: "#d4edda",
+                            color: "#1b4332",
+                            borderRadius: "6px",
+                            padding: "2px 8px",
+                            fontSize: "0.75rem",
+                            fontWeight: "600",
                           }}
                         >
-                          <div className="card-body py-2">
-                            <span className="badge bg-success mb-1">
-                              {ACTIVITY_TYPES.find(
-                                (a) => a.value === tip.category,
-                              )?.label || tip.category}
-                            </span>
-                            <p className="fw-bold mb-1 small">
-                              {i18n.language.startsWith("en") && tip.titleEn
-                                ? tip.titleEn
-                                : tip.title}
-                            </p>
-                            <p className="text-muted mb-1 small">
-                              {i18n.language.startsWith("en") &&
-                              tip.descriptionEn
-                                ? tip.descriptionEn
-                                : tip.description}
-                            </p>
-                            <small className="text-success">
-                              🌿 {t("tips.savingEstimate")}:{" "}
-                              {tip.co2SavedEstimate} kg CO₂
-                            </small>
-                          </div>
-                        </div>
+                          {ACTIVITY_TYPES.find((a) => a.value === tip.category)
+                            ?.label || tip.category}
+                        </span>
+                        <p
+                          style={{
+                            fontWeight: "600",
+                            fontSize: "0.9rem",
+                            margin: "8px 0 4px",
+                          }}
+                        >
+                          {i18n.language.startsWith("en") && tip.titleEn
+                            ? tip.titleEn
+                            : tip.title}
+                        </p>
+                        <p
+                          style={{
+                            fontSize: "0.82rem",
+                            color: "#6c757d",
+                            margin: "0 0 6px",
+                          }}
+                        >
+                          {i18n.language.startsWith("en") && tip.descriptionEn
+                            ? tip.descriptionEn
+                            : tip.description}
+                        </p>
+                        <p
+                          style={{
+                            fontSize: "0.8rem",
+                            color: "#40916c",
+                            fontWeight: "600",
+                            margin: 0,
+                          }}
+                        >
+                          🌿 {t("tips.savingEstimate")}: {tip.co2SavedEstimate}{" "}
+                          kg CO₂
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -450,19 +736,41 @@ function DashboardPage() {
             </div>
           </div>
 
+          {/* Colonna destra — grafico */}
           <div className="col-lg-7">
             <div
-              className="card shadow-sm mb-4 border-0"
-              style={{ borderRadius: "16px" }}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "20px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.07)",
+                overflow: "hidden",
+              }}
             >
-              <div className="card-body" style={{ minHeight: "600px" }}>
-                <h6 className="fw-bold mb-3">📈 {t("dashboard.chart")}</h6>
+              <div style={{ backgroundColor: "#1b4332", padding: "16px 20px" }}>
+                <h6
+                  style={{
+                    color: "white",
+                    fontWeight: "700",
+                    margin: 0,
+                    fontSize: "0.95rem",
+                  }}
+                >
+                  📈 {t("dashboard.chart")}
+                </h6>
+              </div>
+              <div style={{ padding: "24px", minHeight: "500px" }}>
                 {logs.length === 0 ? (
-                  <p className="text-muted text-center py-3">
+                  <p
+                    style={{
+                      color: "#6c757d",
+                      textAlign: "center",
+                      padding: "40px 0",
+                    }}
+                  >
                     {t("dashboard.noData")}
                   </p>
                 ) : (
-                  <div style={{ height: "400px" }}>
+                  <div style={{ height: "420px" }}>
                     <Line data={chartData} options={chartOptions} />
                   </div>
                 )}
