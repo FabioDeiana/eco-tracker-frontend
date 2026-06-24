@@ -33,13 +33,18 @@ function LoginPage({ onLogin }) {
 
   return (
     <div
-      className="min-vh-100 d-flex justify-content-center align-items-center"
       style={{
+        minHeight: "100vh",
         backgroundImage: "url('/forest.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
       }}
     >
+      {/* Overlay */}
       <div
         className="position-absolute top-0 start-0 w-100 h-100"
         style={{ backgroundColor: "rgba(0, 40, 0, 0.50)" }}
@@ -54,62 +59,192 @@ function LoginPage({ onLogin }) {
       <div
         className="card shadow-lg p-4 position-relative"
         style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: "rgba(0, 27, 18, 0.6)",
+        }}
+      />
+
+      {/* Link torna alla homepage */}
+      <Link
+        to="/"
+        style={{
+          position: "absolute",
+          top: "24px",
+          left: "24px",
+          color: "rgba(255,255,255,0.8)",
+          textDecoration: "none",
+          fontSize: "0.9rem",
+          fontWeight: "500",
+          zIndex: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          transition: "color 0.2s",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.color = "rgba(255,255,255,0.8)")
+        }
+      >
+        ← {t("login.backHome")}
+      </Link>
+
+      {/* Card */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
           width: "100%",
           maxWidth: "420px",
-          zIndex: 1,
-          borderRadius: "16px",
-          backgroundColor: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(6px)",
+          backgroundColor: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(12px)",
+          borderRadius: "24px",
+          padding: "40px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+          margin: "24px",
         }}
       >
-        <div className="text-center mb-4">
-          <div style={{ fontSize: "2.5rem" }}>🌿</div>
-          <h2 className="fw-bold text-success">{t("login.title")}</h2>
-          <p className="text-muted">{t("login.subtitle")}</p>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ fontSize: "2.8rem", marginBottom: "8px" }}>🌿</div>
+          <h2
+            style={{ fontWeight: "800", color: "#1b4332", marginBottom: "6px" }}
+          >
+            {t("login.title")}
+          </h2>
+          <p style={{ color: "#6c757d", margin: 0 }}>{t("login.subtitle")}</p>
         </div>
-        {error && <div className="alert alert-danger py-2">{error}</div>}
+
+        {error && (
+          <div
+            style={{
+              backgroundColor: "#fde8e8",
+              border: "1px solid #f5c6cb",
+              borderRadius: "12px",
+              padding: "12px 16px",
+              color: "#dc3545",
+              marginBottom: "20px",
+              fontSize: "0.9rem",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">{t("login.email")}</label>
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              style={{
+                fontWeight: "600",
+                fontSize: "0.9rem",
+                color: "#1b4332",
+                display: "block",
+                marginBottom: "6px",
+              }}
+            >
+              {t("login.email")}
+            </label>
             <input
               type="email"
               name="email"
-              className="form-control"
-              placeholder="tua@email.com"
               value={formData.email}
               onChange={handleChange}
               required
+              placeholder="tua@email.com"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1.5px solid #e9ecef",
+                fontSize: "0.95rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#1b4332")}
+              onBlur={(e) => (e.target.style.borderColor = "#e9ecef")}
             />
           </div>
-          <div className="mb-3">
-            <label className="form-label">{t("login.password")}</label>
+          <div style={{ marginBottom: "24px" }}>
+            <label
+              style={{
+                fontWeight: "600",
+                fontSize: "0.9rem",
+                color: "#1b4332",
+                display: "block",
+                marginBottom: "6px",
+              }}
+            >
+              {t("login.password")}
+            </label>
             <input
               type="password"
               name="password"
-              className="form-control"
-              placeholder="••••••••"
               value={formData.password}
               onChange={handleChange}
               required
+              placeholder="••••••••"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1.5px solid #e9ecef",
+                fontSize: "0.95rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+                boxSizing: "border-box",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#1b4332")}
+              onBlur={(e) => (e.target.style.borderColor = "#e9ecef")}
             />
           </div>
           <button
             type="submit"
-            className="btn btn-success w-100 mt-2"
             disabled={loading}
-            style={{ borderRadius: "8px" }}
+            style={{
+              width: "100%",
+              padding: "14px",
+              backgroundColor: "#1b4332",
+              color: "white",
+              border: "none",
+              borderRadius: "12px",
+              fontWeight: "700",
+              fontSize: "1rem",
+              cursor: "pointer",
+              transition: "background-color 0.2s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2d6a4f")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1b4332")
+            }
           >
             {loading ? t("login.loading") : t("login.submit")}
           </button>
         </form>
-        <div className="text-center mt-3">
-          <small className="text-muted">
-            {t("login.noAccount")}{" "}
-            <Link to="/register" className="text-success fw-bold">
-              {t("login.register")}
-            </Link>
-          </small>
-        </div>
+
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "20px",
+            marginBottom: 0,
+            fontSize: "0.9rem",
+            color: "#6c757d",
+          }}
+        >
+          {t("login.noAccount")}{" "}
+          <Link
+            to="/register"
+            style={{
+              color: "#1b4332",
+              fontWeight: "700",
+              textDecoration: "none",
+            }}
+          >
+            {t("login.register")}
+          </Link>
+        </p>
       </div>
     </div>
   );

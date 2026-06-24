@@ -55,7 +55,14 @@
   "strength4Text": "Available in Italian and English, with instant language switching.",
   "tipsPreviewTitle": "Some tips to get started",
   "tipsPreviewSubtitle": "Small daily actions that make a difference.",
-  "tipsPreviewCta": "Sign up to get personalized tips"
+  "tipsPreviewCta": "Sign up to get personalized tips",
+  "howSubtitle": "Get started in minutes, completely free.",
+  "finalCtaSubtitle": "Join us and start tracking your carbon footprint today.",
+  "didYouKnowTitle": "Did you know?",
+  "didYouKnowSubtitle": "Some facts that might surprise you.",
+  "fact1": "A round-trip flight from Rome to New York emits about 3 tonnes of CO₂ per passenger — nearly double the annual emissions of a person in some countries.",
+  "fact2": "Producing 1 kg of beef generates an average of 27 kg of CO₂ equivalent. Replacing it with legumes reduces that impact by 90%.",
+  "fact3": "An average car travels about 12,000 km per year, emitting around 2 tonnes of CO₂. Using public transport for the same trips reduces emissions by 80%."
 },
 "footer": {
   "tagline": "Track your carbon footprint and contribute to a more sustainable future.",
@@ -137,7 +144,10 @@
     "aboveAverage": "⚠️ Above global average",
     "loadError": "Error loading data",
     "addError": "Error adding activity",
-    "deleteError": "Error deleting activity"
+    "deleteError": "Error deleting activity",
+    "streakAtRisk": "At risk!",
+    "streakActive": "Keep it up!",
+    "streakDays": "consecutive days"
   },
   "profile": {
     "title": "Your Profile",
@@ -182,7 +192,7 @@
     "loadError": "Error loading statistics"
   },
   "users": {
-    "title": "👥 User Management",
+    "title": "User Management",
     "name": "Name",
     "email": "Email",
     "role": "Role",

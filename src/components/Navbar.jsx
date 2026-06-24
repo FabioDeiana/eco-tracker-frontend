@@ -5,7 +5,7 @@ import "flag-icons/css/flag-icons.min.css"
 function Navbar({ onLogout, isAdmin }) {
   const location = useLocation()
   const { t, i18n } = useTranslation()
-  const isActive = (path) => location.pathname === path ? "nav-link active" : "nav-link"
+  const isActive = (path) => location.pathname === path
 
   const toggleLanguage = () => {
     const newLang = i18n.language.startsWith("it") ? "en" : "it"
@@ -19,67 +19,118 @@ function Navbar({ onLogout, isAdmin }) {
         <Link className="navbar-brand fw-bold" to="/">
           🌿 Eco-Tracker
         </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <Link className={isActive("/dashboard")} to="/dashboard">
-                {t("navbar.dashboard")}
+
+        {/* Links */}
+        <div className="d-flex align-items-center gap-1">
+          <Link to="/dashboard" style={{
+            color: isActive("/dashboard") ? "white" : "rgba(255,255,255,0.7)",
+            textDecoration: "none",
+            fontWeight: isActive("/dashboard") ? "600" : "400",
+            fontSize: "0.95rem",
+            padding: "6px 12px",
+            borderRadius: "8px",
+            backgroundColor: isActive("/dashboard") ? "rgba(255,255,255,0.1)" : "transparent",
+            transition: "all 0.2s",
+          }}>
+            {t("navbar.dashboard")}
+          </Link>
+
+          {isAdmin && (
+            <>
+              <Link to="/stats" style={{
+                color: isActive("/stats") ? "white" : "rgba(255,255,255,0.7)",
+                textDecoration: "none",
+                fontWeight: isActive("/stats") ? "600" : "400",
+                fontSize: "0.95rem",
+                padding: "6px 12px",
+                borderRadius: "8px",
+                backgroundColor: isActive("/stats") ? "rgba(255,255,255,0.1)" : "transparent",
+                transition: "all 0.2s",
+              }}>
+                {t("navbar.stats")}
               </Link>
-            </li>
-            {isAdmin && (
-              <>
-                <li className="nav-item">
-                  <Link className={isActive("/stats")} to="/stats">
-                    {t("navbar.stats")}
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className={isActive("/users")} to="/users">
-                    {t("navbar.users")}
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className={isActive("/green-tips")} to="/green-tips">
-                    {t("navbar.greenTips")}
-                  </Link>
-                </li>
-              </>
-            )}
-            {!isAdmin && (
-              <li className="nav-item">
-                <Link className={isActive("/profile")} to="/profile">
-                  {t("navbar.profile")}
-                </Link>
-              </li>
-            )}
-          </ul>
-          <div className="d-flex align-items-center gap-3">
-            <button
-              onClick={toggleLanguage}
-              style={{ background: "none", border: "none", cursor: "pointer", padding: "2px" }}
-              title={i18n.language.startsWith("it") ? "Switch to English" : "Passa all'italiano"}
-            >
-              <span
-                className={`fi fi-${i18n.language.startsWith("it") ? "it" : "gb"}`}
-                style={{ fontSize: "1.5rem", borderRadius: "3px" }}
-              />
-              <span className="ms-1 text-white small">
-                {i18n.language.startsWith("it") ? "IT" : "EN"}
-              </span>
-            </button>
-            <button className="btn btn-outline-light" onClick={onLogout}>
-              {t("navbar.logout")}
-            </button>
-          </div>
+              <Link to="/users" style={{
+                color: isActive("/users") ? "white" : "rgba(255,255,255,0.7)",
+                textDecoration: "none",
+                fontWeight: isActive("/users") ? "600" : "400",
+                fontSize: "0.95rem",
+                padding: "6px 12px",
+                borderRadius: "8px",
+                backgroundColor: isActive("/users") ? "rgba(255,255,255,0.1)" : "transparent",
+                transition: "all 0.2s",
+              }}>
+                {t("navbar.users")}
+              </Link>
+              <Link to="/green-tips" style={{
+                color: isActive("/green-tips") ? "white" : "rgba(255,255,255,0.7)",
+                textDecoration: "none",
+                fontWeight: isActive("/green-tips") ? "600" : "400",
+                fontSize: "0.95rem",
+                padding: "6px 12px",
+                borderRadius: "8px",
+                backgroundColor: isActive("/green-tips") ? "rgba(255,255,255,0.1)" : "transparent",
+                transition: "all 0.2s",
+              }}>
+                {t("navbar.greenTips")}
+              </Link>
+            </>
+          )}
+
+          {!isAdmin && (
+            <Link to="/profile" style={{
+              color: isActive("/profile") ? "white" : "rgba(255,255,255,0.7)",
+              textDecoration: "none",
+              fontWeight: isActive("/profile") ? "600" : "400",
+              fontSize: "0.95rem",
+              padding: "6px 12px",
+              borderRadius: "8px",
+              backgroundColor: isActive("/profile") ? "rgba(255,255,255,0.1)" : "transparent",
+              transition: "all 0.2s",
+            }}>
+              {t("navbar.profile")}
+            </Link>
+          )}
         </div>
+
+        {/* Destra — lingua + logout */}
+        <div className="d-flex align-items-center gap-3">
+          <button
+            onClick={toggleLanguage}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "4px",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              color: "rgba(255,255,255,0.8)",
+              fontSize: "0.85rem",
+            }}
+            title={i18n.language.startsWith("it") ? "Switch to English" : "Passa all'italiano"}
+          >
+            <span className={`fi fi-${i18n.language.startsWith("it") ? "it" : "gb"}`} style={{ fontSize: "1.2rem", borderRadius: "3px" }} />
+          </button>
+
+          <button
+            onClick={onLogout}
+            style={{
+              backgroundColor: "transparent",
+              border: "1px solid rgba(255,255,255,0.4)",
+              color: "white",
+              padding: "6px 16px",
+              borderRadius: "8px",
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              fontWeight: "500",
+              transition: "all 0.2s",
+            }}
+          >
+            {t("navbar.logout")}
+          </button>
+        </div>
+
       </div>
     </nav>
   )
